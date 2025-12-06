@@ -99,6 +99,15 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
+        /* CTA button hover effect */
+        .cta-button {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(74, 144, 194, 0.4);
+        }
+
         /* Decorative blob */
         .blob {
             border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
@@ -187,7 +196,7 @@
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up animation-delay-600">
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="px-8 py-4 bg-blue text-white font-semibold rounded-2xl transition-all duration-300 shadow-xl shadow-blue/25 hover:shadow-blue/40 hover:shadow-2xl hover:-translate-y-1 hover:scale-105 cursor-pointer">
+                            <a href="{{ route('register') }}" class="cta-button px-8 py-4 bg-blue text-white font-semibold rounded-2xl shadow-lg shadow-blue/25 cursor-pointer">
                                 Start Free Today
                             </a>
                         @endif
@@ -405,7 +414,7 @@
             </p>
 
             @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="inline-flex items-center gap-2 px-10 py-5 bg-blue text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-xl shadow-blue/25 hover:shadow-blue/40 hover:shadow-2xl hover:-translate-y-1.5 hover:scale-105 cursor-pointer">
+                <a href="{{ route('register') }}" class="cta-button inline-flex items-center gap-2 px-10 py-5 bg-blue text-white font-semibold text-lg rounded-2xl shadow-lg shadow-blue/25 cursor-pointer">
                     Get Started Free
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
