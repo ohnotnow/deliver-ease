@@ -107,7 +107,7 @@ are going.
 ### Phase 5: Driver UI - COMPLETE
 
 - [x] **5.1 AccessRun** - Mobile-friendly PIN entry screen using **flux:otp component**, session-based authentication
-- [x] **5.2 ActiveRun** - Mobile-optimized TODO interface with Start button, large Complete buttons, progress footer, **drag-and-drop reordering (wire:sort)**
+- [x] **5.2 ActiveRun** - Mobile-optimized TODO interface with Start button, large Complete buttons, progress footer, **drag-and-drop reordering (wire:sort)**, and completed deliveries now sort to the bottom.
 
 ### Phase 6: Testing - COMPLETE
 

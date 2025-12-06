@@ -24,7 +24,10 @@ class ActiveRun extends Component
     #[Computed]
     public function deliveries()
     {
-        return $this->run->deliveries()->orderBy('position')->get();
+        return $this->run->deliveries() // Call the relationship method
+            ->get()                     // Get the collection
+            ->sortBy(fn ($delivery) => $delivery->isCompleted() ? 1 : 0)
+            ->values();
     }
 
     #[Computed]

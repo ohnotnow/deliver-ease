@@ -207,3 +207,36 @@ it('does not send duplicate notifications when start is called twice', function 
     Mail::assertQueued(YouAreNextMail::class, 1);
     Mail::assertQueued(OneStopAwayMail::class, 1);
 });
+
+it('sorts completed deliveries to the bottom of the list', function () {
+    $business = Business::factory()->create();
+    $owner = User::factory()->create(['business_id' => $business->id]);
+    $run = Run::factory()->for($business)->create([
+        'created_by_user_id' => $owner->id,
+    ]);
+
+    $first = Delivery::factory()->for($run)->create(['position' => 1, 'name' => 'First Stop']);
+    $second = Delivery::factory()->for($run)->create(['position' => 2, 'name' => 'Second Stop']);
+    $third = Delivery::factory()->for($run)->create(['position' => 3, 'name' => 'Third Stop']);
+
+    session(['driver_run_'.$run->uuid => true]);
+
+    $component = Livewire::test(ActiveRun::class, ['uuid' => $run->uuid]);
+
+    // Initial state: 1, 2, 3
+    $component->assertSeeInOrder(['First Stop', 'Second Stop', 'Third Stop']);
+
+    $component->call('startRun');
+
+    // Complete the second one
+    $component->call('completeDelivery', $second->id);
+
+    // Expected: 1, 3, 2 (Completed at bottom)
+    $component->assertSeeInOrder(['First Stop', 'Third Stop', 'Second Stop']);
+
+    // Complete the first one
+    $component->call('completeDelivery', $first->id);
+
+    // Expected: 3 (Pending), 1 (Completed), 2 (Completed) -> Stable sort preserves 1 before 2
+    $component->assertSeeInOrder(['Third Stop', 'First Stop', 'Second Stop']);
+});
