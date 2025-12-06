@@ -108,6 +108,20 @@
             box-shadow: 0 20px 40px rgba(74, 144, 194, 0.4);
         }
 
+        /* Secondary button hover effect */
+        .cta-button-secondary {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .cta-button-secondary:hover {
+            transform: translateY(-4px) scale(1.03);
+            background-color: rgba(245, 176, 65, 0.2);
+            box-shadow: 0 15px 30px rgba(30, 58, 95, 0.15);
+        }
+        .dark .cta-button-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
         /* Decorative blob */
         .blob {
             border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
@@ -200,7 +214,7 @@
                                 Start Free Today
                             </a>
                         @endif
-                        <a href="#how-it-works" class="px-8 py-4 bg-cream-dark dark:bg-white/10 font-semibold rounded-2xl hover:bg-yellow/20 dark:hover:bg-white/20 transition-all border-2 border-navy/10 dark:border-white/10 cursor-pointer">
+                        <a href="#how-it-works" class="cta-button-secondary px-8 py-4 bg-cream-dark dark:bg-white/10 font-semibold rounded-2xl border-2 border-navy/10 dark:border-white/10 cursor-pointer">
                             See How It Works
                         </a>
                     </div>
