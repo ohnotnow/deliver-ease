@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\DeliveryStatus;
 use App\Events\DeliveryCompleted;
 use App\Mail\OneStopAwayMail;
 use App\Mail\YouAreNextMail;
@@ -17,7 +18,13 @@ class SendNextDeliveryNotifications
         $nextDelivery = $run->nextPendingDelivery();
 
         if (! $nextDelivery) {
-            $run->markCompleted();
+            $hasRemaining = $run->deliveries()
+                ->whereIn('status', [DeliveryStatus::Pending, DeliveryStatus::Notified])
+                ->exists();
+
+            if (! $hasRemaining) {
+                $run->markCompleted();
+            }
 
             return;
         }
