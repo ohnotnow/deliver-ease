@@ -22,7 +22,7 @@ class Edit extends Component
 
     public function mount(Run $run): void
     {
-        $this->authorize('update', $run);
+        $this->authorize('view', $run);
 
         $this->run = $run;
         $this->name = $run->name;

@@ -6,7 +6,10 @@ use App\Models\Business;
 use App\Models\Delivery;
 use App\Models\Run;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+
+uses(RefreshDatabase::class);
 
 it('lets a business owner create a run with deliveries', function () {
     $business = Business::factory()->create();
@@ -109,4 +112,81 @@ it('allows pending runs to be deleted by their owner', function () {
 
     expect(Run::whereKey($run->id)->exists())->toBeFalse()
         ->and(Delivery::where('run_id', $run->id)->exists())->toBeFalse();
+});
+
+it('allows completed runs to be deleted by their owner', function () {
+    $business = Business::factory()->create();
+    $user = User::factory()->create(['business_id' => $business->id]);
+    $run = Run::factory()->for($business)->completed()->create([
+        'created_by_user_id' => $user->id,
+    ]);
+
+    Delivery::factory()->for($run)->count(1)->create(['position' => 1]);
+
+    Livewire::actingAs($user)
+        ->test(Edit::class, ['run' => $run])
+        ->call('delete')
+        ->assertRedirect(route('runs.index'));
+
+    expect(Run::whereKey($run->id)->exists())->toBeFalse();
+});
+
+it('prevents deleting runs that belong to another business', function () {
+    $business = Business::factory()->create();
+    $otherBusiness = Business::factory()->create();
+
+    $owner = User::factory()->create(['business_id' => $business->id]);
+    $run = Run::factory()->for($business)->create([
+        'created_by_user_id' => $owner->id,
+    ]);
+
+    $otherUser = User::factory()->create(['business_id' => $otherBusiness->id]);
+
+    Livewire::actingAs($otherUser)
+        ->test(Edit::class, ['run' => $run])
+        ->assertForbidden();
+});
+
+it('prevents deleting in-progress runs', function () {
+    $business = Business::factory()->create();
+    $user = User::factory()->create(['business_id' => $business->id]);
+    $run = Run::factory()->for($business)->inProgress()->create([
+        'created_by_user_id' => $user->id,
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(Edit::class, ['run' => $run])
+        ->call('delete')
+        ->assertForbidden();
+});
+
+it('prevents updating runs that are already in progress', function () {
+    $business = Business::factory()->create();
+    $user = User::factory()->create(['business_id' => $business->id]);
+    $run = Run::factory()->for($business)->inProgress()->create([
+        'created_by_user_id' => $user->id,
+        'name' => 'Locked Run',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(Edit::class, ['run' => $run])
+        ->set('name', 'Attempted Update')
+        ->call('save')
+        ->assertForbidden();
+});
+
+it('prevents viewing runs that belong to another business', function () {
+    $business = Business::factory()->create();
+    $otherBusiness = Business::factory()->create();
+
+    $owner = User::factory()->create(['business_id' => $business->id]);
+    $run = Run::factory()->for($business)->create([
+        'created_by_user_id' => $owner->id,
+    ]);
+
+    $otherUser = User::factory()->create(['business_id' => $otherBusiness->id]);
+
+    Livewire::actingAs($otherUser)
+        ->test(\App\Livewire\Runs\Show::class, ['run' => $run])
+        ->assertForbidden();
 });
