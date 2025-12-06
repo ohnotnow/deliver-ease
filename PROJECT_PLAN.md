@@ -130,6 +130,14 @@ are going.
    - `wire:sort` directive for drag-and-drop reordering (no more manual JS!)
    - `flux:otp` component for the driver PIN entry (cleaner 2FA-style UX)
 
+5. **Landing page:** Replaced the default Laravel welcome page with a custom landing page (`resources/views/welcome.blade.php`):
+   - Uses the splash image from `public/images/splash.jpg` (mobile version: `splash-mobile.jpg`)
+   - Color palette extracted from the illustration (cream, navy, sky blue, warm yellow, fresh green)
+   - "Outfit" font for a friendly, modern feel
+   - Dark mode support with toggle (respects system preference, remembers user choice)
+   - Alpine.js loaded via CDN (since Livewire/Flux aren't used on this standalone page)
+   - **Note:** The "Start Free Today" and "Get Started Free" CTA buttons only appear when `Route::has('register')` is true - if you don't see them, check that the register route is enabled.
+
 ---
 
 ## Next Steps (When Resuming)
