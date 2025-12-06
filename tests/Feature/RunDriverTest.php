@@ -170,6 +170,22 @@ it('does not complete a delivery unless it is notified', function () {
     Mail::assertNothingQueued();
 });
 
+it('returns not found when attempting to complete a delivery from another run', function () {
+    Mail::fake();
+
+    $run = Run::factory()->create();
+    $otherRun = Run::factory()->create();
+
+    $foreignDelivery = Delivery::factory()->for($otherRun)->create();
+
+    session(['driver_run_'.$run->uuid => true]);
+
+    $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+    Livewire::test(ActiveRun::class, ['uuid' => $run->uuid])
+        ->call('completeDelivery', $foreignDelivery->id);
+});
+
 it('does not send duplicate notifications when start is called twice', function () {
     Mail::fake();
 

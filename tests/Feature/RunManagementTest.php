@@ -160,9 +160,9 @@ it('lists only the authenticated business runs and can filter by status', functi
     $business = Business::factory()->create();
     $user = User::factory()->create(['business_id' => $business->id]);
 
-    $pending = Run::factory()->for($business)->create(['created_by_user_id' => $user->id, 'status' => RunStatus::Pending]);
-    $inProgress = Run::factory()->for($business)->inProgress()->create(['created_by_user_id' => $user->id]);
-    $completed = Run::factory()->for($business)->completed()->create(['created_by_user_id' => $user->id]);
+    $pending = Run::factory()->for($business)->create(['created_by_user_id' => $user->id, 'status' => RunStatus::Pending, 'name' => 'Pending Run']);
+    $inProgress = Run::factory()->for($business)->inProgress()->create(['created_by_user_id' => $user->id, 'name' => 'In Progress Run']);
+    $completed = Run::factory()->for($business)->completed()->create(['created_by_user_id' => $user->id, 'name' => 'Completed Run']);
 
     // Another business run should be hidden
     Run::factory()->create();
