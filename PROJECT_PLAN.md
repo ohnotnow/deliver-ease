@@ -109,9 +109,9 @@ are going.
 - [x] **5.1 AccessRun** - Mobile-friendly PIN entry screen using **flux:otp component**, session-based authentication
 - [x] **5.2 ActiveRun** - Mobile-optimized TODO interface with Start button, large Complete buttons, progress footer, **drag-and-drop reordering (wire:sort)**
 
-### Phase 6: Testing - PENDING
+### Phase 6: Testing - COMPLETE
 
-- [ ] **6.1 Feature Tests**
+- [x] **6.1 Feature Tests**
   - `RunManagementTest` - CRUD, authorization
   - `DriverAccessTest` - PIN validation, session handling
   - `DeliveryNotificationTest` - Email sending, state transitions
@@ -138,10 +138,7 @@ are going.
 
 2. **Seed test data** - `php artisan db:seed --class=TestDataSeeder` for local development
 
-3. **Write feature tests**
-   - `RunManagementTest` - CRUD operations, authorization
-   - `DriverAccessTest` - PIN validation, session handling
-   - `DeliveryNotificationTest` - Email sending, state transitions
+3. **Write feature tests** - COMPLETE
 
 4. **Test the full flow manually**
    - Create a run as a business owner

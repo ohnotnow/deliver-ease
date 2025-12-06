@@ -57,14 +57,15 @@
                         </div>
 
                         @if(count($deliveries) > 1)
-                            <flux:button
-                                type="button"
-                                wire:click="removeDelivery({{ $index }})"
-                                variant="ghost"
-                                size="sm"
-                                icon="trash"
-                                class="text-red-500 hover:text-red-600"
-                            />
+                            <flux:modal.trigger :name="'confirm-delete-delivery-'.$index">
+                                <flux:button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    icon="trash"
+                                    class="text-red-500 hover:text-red-600"
+                                />
+                            </flux:modal.trigger>
                         @endif
                     </div>
                 @endforeach
@@ -93,7 +94,7 @@
         </div>
     </flux:card>
 
-    <flux:modal name="confirm-delete" class="max-w-md">
+    <flux:modal name="confirm-delete" class="max-w-md" flyout>
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">Delete this run?</flux:heading>
@@ -108,4 +109,22 @@
             </div>
         </div>
     </flux:modal>
+
+    @foreach($deliveries as $index => $delivery)
+        <flux:modal :name="'confirm-delete-delivery-'.$index" class="max-w-md" flyout>
+            <div class="space-y-6">
+                <div>
+                    <flux:heading size="lg">Remove this delivery?</flux:heading>
+                    <flux:subheading>This will remove "{{ $delivery['name'] ?: $delivery['email'] }}" from the run.</flux:subheading>
+                </div>
+
+                <div class="flex gap-2">
+                    <flux:modal.close>
+                        <flux:button variant="ghost" class="flex-1">Cancel</flux:button>
+                    </flux:modal.close>
+                    <flux:button wire:click="removeDelivery({{ $index }})" variant="danger" class="flex-1">Remove Delivery</flux:button>
+                </div>
+            </div>
+        </flux:modal>
+    @endforeach
 </div>

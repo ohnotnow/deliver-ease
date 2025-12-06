@@ -87,7 +87,7 @@
                         </flux:table.cell>
                     </flux:table.row>
 
-                    <flux:modal :name="'share-'.$run->id" class="md:w-96">
+                    <flux:modal :name="'share-'.$run->id" class="md:w-96" flyout>
                         <div class="space-y-6">
                             <div>
                                 <flux:heading size="lg">Share with Driver</flux:heading>
@@ -107,7 +107,7 @@
                     </flux:modal>
 
                     @unless($run->isStarted())
-                        <flux:modal :name="'delete-'.$run->id" class="max-w-md">
+                        <flux:modal :name="'delete-'.$run->id" class="max-w-md" flyout>
                             <div class="space-y-6">
                                 <div>
                                     <flux:heading size="lg">Delete this run?</flux:heading>

@@ -91,7 +91,7 @@
     </flux:card>
 
     {{-- Share modal --}}
-    <flux:modal name="share-run" class="md:w-96">
+    <flux:modal name="share-run" class="md:w-96" flyout>
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">Share with Driver</flux:heading>
