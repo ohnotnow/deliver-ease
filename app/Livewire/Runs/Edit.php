@@ -22,7 +22,7 @@ class Edit extends Component
 
     public function mount(Run $run): void
     {
-        $this->authorize('update', $run);
+        $this->authorize('view', $run);
 
         $this->run = $run;
         $this->name = $run->name;
@@ -53,6 +53,7 @@ class Edit extends Component
         if (count($this->deliveries) > 1) {
             unset($this->deliveries[$index]);
             $this->deliveries = array_values($this->deliveries);
+            Flux::modal('confirm-delete-delivery-'.$index)->close();
         }
     }
 

@@ -4,11 +4,14 @@ namespace App\Livewire\Runs;
 
 use App\Models\Run;
 use Flux;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Create extends Component
 {
+    use AuthorizesRequests;
+
     public string $name = '';
 
     public string $pin = '';
@@ -20,6 +23,8 @@ class Create extends Component
 
     public function mount(): void
     {
+        $this->authorize('create', Run::class);
+
         $this->pin = $this->generatePin();
     }
 

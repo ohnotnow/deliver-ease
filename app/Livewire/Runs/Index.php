@@ -19,6 +19,11 @@ class Index extends Component
     #[Url]
     public $status = '';
 
+    public function mount(): void
+    {
+        $this->authorize('viewAny', Run::class);
+    }
+
     public function updatedStatus(): void
     {
         $this->resetPage();
