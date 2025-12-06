@@ -29,21 +29,24 @@
     @endif
 
     {{-- Deliveries list --}}
-    <div class="space-y-3">
+    <div wire:sort="sortDelivery" class="space-y-3">
         @foreach($this->deliveries as $delivery)
             <div
                 wire:key="delivery-{{ $delivery->id }}"
+                wire:sort:item="{{ $delivery->id }}"
                 class="rounded-xl p-4 {{ $delivery->isCompleted() ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800' : ($delivery->isNotified() ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800' : 'bg-zinc-100 dark:bg-zinc-800 border-2 border-transparent') }}"
             >
                 <div class="flex items-center gap-4">
-                    {{-- Position indicator --}}
-                    <div class="flex items-center justify-center w-12 h-12 rounded-full shrink-0 text-lg font-bold {{ $delivery->isCompleted() ? 'bg-green-500 text-white' : ($delivery->isNotified() ? 'bg-blue-500 text-white' : 'bg-zinc-300 dark:bg-zinc-600 text-zinc-600 dark:text-zinc-300') }}">
-                        @if($delivery->isCompleted())
+                    {{-- Position indicator / drag handle --}}
+                    @if($delivery->isCompleted())
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full shrink-0 bg-green-500 text-white">
                             <flux:icon.check class="w-6 h-6" />
-                        @else
-                            {{ $delivery->position }}
-                        @endif
-                    </div>
+                        </div>
+                    @else
+                        <div wire:sort:handle class="flex items-center justify-center w-12 h-12 rounded-full shrink-0 cursor-grab active:cursor-grabbing {{ $delivery->isNotified() ? 'bg-blue-500 text-white' : 'bg-zinc-300 dark:bg-zinc-600 text-zinc-600 dark:text-zinc-300' }}">
+                            <flux:icon.bars-3 class="w-6 h-6" />
+                        </div>
+                    @endif
 
                     {{-- Customer info --}}
                     <div class="flex-1 min-w-0">

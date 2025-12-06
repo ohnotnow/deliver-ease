@@ -56,6 +56,14 @@ class Edit extends Component
         }
     }
 
+    public function sortDelivery(int $itemIndex, int $newPosition): void
+    {
+        $item = $this->deliveries[$itemIndex];
+        unset($this->deliveries[$itemIndex]);
+        $this->deliveries = array_values($this->deliveries);
+        array_splice($this->deliveries, $newPosition, 0, [$item]);
+    }
+
     public function save(): void
     {
         $this->authorize('update', $this->run);

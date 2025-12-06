@@ -16,9 +16,6 @@
         </div>
 
         <div class="flex items-center gap-2">
-            @if($run->isPending())
-                <flux:button variant="subtle" :href="route('runs.edit', $run)" wire:navigate icon="pencil">Edit</flux:button>
-            @endif
             <flux:modal.trigger name="share-run">
                 <flux:button icon="share">Share with Driver</flux:button>
             </flux:modal.trigger>
@@ -54,7 +51,12 @@
 
     {{-- Deliveries list --}}
     <flux:card class="space-y-4">
-        <flux:heading size="lg">Deliveries</flux:heading>
+        <div class="flex items-center justify-between">
+            <flux:heading size="lg">Deliveries</flux:heading>
+            @if($run->isPending())
+                <flux:button variant="subtle" :href="route('runs.edit', $run)" wire:navigate icon="pencil">Edit</flux:button>
+            @endif
+        </div>
 
         <div class="space-y-2">
             @foreach($this->deliveries as $delivery)

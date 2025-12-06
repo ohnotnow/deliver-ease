@@ -57,6 +57,27 @@ class ActiveRun extends Component
         }
     }
 
+    public function sortDelivery(int $deliveryId, int $newPosition): void
+    {
+        $deliveries = $this->run->deliveries()->orderBy('position')->get();
+        $movedDelivery = $deliveries->firstWhere('id', $deliveryId);
+
+        if (! $movedDelivery) {
+            return;
+        }
+
+        // Remove from current position and insert at new position
+        $deliveries = $deliveries->reject(fn ($d) => $d->id === $deliveryId)->values();
+        $deliveries->splice($newPosition, 0, [$movedDelivery]);
+
+        // Update all positions (1-based in database)
+        foreach ($deliveries as $index => $delivery) {
+            $delivery->update(['position' => $index + 1]);
+        }
+
+        unset($this->deliveries);
+    }
+
     public function render()
     {
         return view('livewire.driver.active-run');

@@ -35,11 +35,11 @@
                 <flux:button type="button" wire:click="addDelivery" icon="plus" size="sm">Add Stop</flux:button>
             </div>
 
-            <div class="space-y-4">
+            <div wire:sort="sortDelivery" class="space-y-4">
                 @foreach($deliveries as $index => $delivery)
-                    <div wire:key="delivery-{{ $index }}" class="flex items-start gap-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800">
-                        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-700 shrink-0">
-                            <flux:text variant="strong">{{ $index + 1 }}</flux:text>
+                    <div wire:key="delivery-{{ $index }}" wire:sort:item="{{ $index }}" class="flex items-start gap-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800">
+                        <div wire:sort:handle class="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-700 shrink-0 cursor-grab active:cursor-grabbing" title="Drag to reorder">
+                            <flux:icon.bars-3 class="w-4 h-4 text-zinc-500" />
                         </div>
 
                         <div class="flex-1 grid grid-cols-1 gap-4 sm:grid-cols-2">

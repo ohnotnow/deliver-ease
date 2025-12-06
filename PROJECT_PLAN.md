@@ -40,6 +40,7 @@ are going.
 - Business owner IS the admin who tracks their own runs
 - Use Laravel events/listeners for notification logic (extensible)
 - Dynamic form fields for delivery entry (Name + Email per row)
+- **Livewire v4 beta** - Upgraded to test new features (wire:sort for drag-and-drop)
 
 ---
 
@@ -99,14 +100,14 @@ are going.
 
 - [x] **4.1 Dashboard** - Stats cards (active/pending/completed today), recent runs table with status badges
 - [x] **4.2 Runs Index** - Paginated table with status filter, share modal with copyable URL/PIN
-- [x] **4.3 Runs Create** - Form with run name, PIN (auto-generated), dynamic delivery rows
-- [x] **4.4 Runs Edit** - Pre-filled form, only accessible for pending runs (via RunPolicy)
+- [x] **4.3 Runs Create** - Form with run name, PIN (auto-generated), dynamic delivery rows, **drag-and-drop reordering (wire:sort)**
+- [x] **4.4 Runs Edit** - Pre-filled form, only accessible for pending runs (via RunPolicy), **drag-and-drop reordering (wire:sort)**
 - [x] **4.5 Runs Show** - Progress tracking with polling, delivery status list, share modal
 
 ### Phase 5: Driver UI - COMPLETE
 
-- [x] **5.1 AccessRun** - Mobile-friendly PIN entry screen, session-based authentication
-- [x] **5.2 ActiveRun** - Mobile-optimized TODO interface with Start button, large Complete buttons, progress footer
+- [x] **5.1 AccessRun** - Mobile-friendly PIN entry screen using **flux:otp component**, session-based authentication
+- [x] **5.2 ActiveRun** - Mobile-optimized TODO interface with Start button, large Complete buttons, progress footer, **drag-and-drop reordering (wire:sort)**
 
 ### Phase 6: Testing - PENDING
 
@@ -124,6 +125,10 @@ are going.
 2. **Routes before components:** Adding Livewire routes before the component classes exist causes Laravel to error. Workaround: comment out routes, create components, then uncomment.
 
 3. **Migrations not yet run:** The database migrations have been created but not run. You'll need to run `php artisan migrate` (or `lando artisan migrate`) to apply them.
+
+4. **Livewire v4 beta upgrade:** Upgraded to Livewire v4 beta to try new features. Key additions used:
+   - `wire:sort` directive for drag-and-drop reordering (no more manual JS!)
+   - `flux:otp` component for the driver PIN entry (cleaner 2FA-style UX)
 
 ---
 
