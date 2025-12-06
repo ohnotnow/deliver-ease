@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('runs', function (Blueprint $table) {
+        Schema::create('deliveries', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
-            $table->foreignId('business_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('created_by_user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('name');
-            $table->string('pin', 6);
+            $table->foreignId('run_id')->constrained()->cascadeOnDelete();
+            $table->string('email');
+            $table->string('name')->nullable();
+            $table->unsignedInteger('position');
             $table->string('status')->default('pending');
-            $table->timestamp('started_at')->nullable();
+            $table->timestamp('notified_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
+
+            $table->unique(['run_id', 'position']);
         });
     }
 
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('runs');
+        Schema::dropIfExists('deliveries');
     }
 };
