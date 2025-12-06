@@ -102,6 +102,17 @@ class Edit extends Component
         $this->pin = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
     }
 
+    public function delete(): void
+    {
+        $this->authorize('delete', $this->run);
+
+        $this->run->delete();
+
+        Flux::toast('Run deleted');
+
+        $this->redirect(route('runs.index'), navigate: true);
+    }
+
     public function render()
     {
         return view('livewire.runs.edit');

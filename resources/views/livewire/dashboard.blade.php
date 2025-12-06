@@ -39,13 +39,14 @@
                     <flux:table.column>Status</flux:table.column>
                     <flux:table.column>Deliveries</flux:table.column>
                     <flux:table.column>Created</flux:table.column>
-                    <flux:table.column></flux:table.column>
                 </flux:table.columns>
 
                 <flux:table.rows>
                     @foreach($this->recentRuns as $run)
                         <flux:table.row :key="$run->id">
-                            <flux:table.cell variant="strong">{{ $run->name }}</flux:table.cell>
+                            <flux:table.cell variant="strong">
+                                <flux:link :href="route('runs.show', $run)" wire:navigate>{{ $run->name }}</flux:link>
+                            </flux:table.cell>
                             <flux:table.cell>
                                 @if($run->isPending())
                                     <flux:badge color="zinc" size="sm" inset="top bottom">Pending</flux:badge>
@@ -59,9 +60,6 @@
                                 {{ $run->completedDeliveriesCount() }} / {{ $run->deliveries->count() }}
                             </flux:table.cell>
                             <flux:table.cell class="whitespace-nowrap">{{ $run->created_at->format('M j, g:i A') }}</flux:table.cell>
-                            <flux:table.cell>
-                                <flux:button variant="ghost" size="sm" icon="eye" :href="route('runs.show', $run)" wire:navigate />
-                            </flux:table.cell>
                         </flux:table.row>
                     @endforeach
                 </flux:table.rows>

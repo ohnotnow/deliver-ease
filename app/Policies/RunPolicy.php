@@ -32,6 +32,6 @@ class RunPolicy
     public function delete(User $user, Run $run): bool
     {
         return $user->business_id === $run->business_id
-            && $run->status === RunStatus::Pending;
+            && $run->status !== RunStatus::InProgress;
     }
 }

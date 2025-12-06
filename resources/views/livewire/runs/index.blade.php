@@ -47,7 +47,9 @@
             <flux:table.rows>
                 @foreach($this->runs as $run)
                     <flux:table.row :key="$run->id">
-                        <flux:table.cell variant="strong">{{ $run->name }}</flux:table.cell>
+                        <flux:table.cell variant="strong">
+                            <flux:link :href="route('runs.show', $run)" wire:navigate>{{ $run->name }}</flux:link>
+                        </flux:table.cell>
                         <flux:table.cell>
                             @if($run->isPending())
                                 <flux:badge color="zinc" size="sm" inset="top bottom">Pending</flux:badge>
@@ -62,15 +64,26 @@
                         </flux:table.cell>
                         <flux:table.cell class="whitespace-nowrap">{{ $run->created_at->format('M j, Y') }}</flux:table.cell>
                         <flux:table.cell>
-                            <div class="flex items-center gap-1">
-                                <flux:button variant="ghost" size="sm" icon="eye" :href="route('runs.show', $run)" wire:navigate tooltip="View" />
-                                @if($run->isPending())
-                                    <flux:button variant="ghost" size="sm" icon="pencil" :href="route('runs.edit', $run)" wire:navigate tooltip="Edit" />
-                                @endif
-                                <flux:modal.trigger :name="'share-'.$run->id">
-                                    <flux:button variant="ghost" size="sm" icon="share" tooltip="Share with driver" />
-                                </flux:modal.trigger>
-                            </div>
+                            <flux:dropdown position="bottom" align="end">
+                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" />
+
+                                <flux:menu>
+                                    <flux:menu.item icon="eye" :href="route('runs.show', $run)" wire:navigate>View</flux:menu.item>
+                                    @if($run->isPending())
+                                        <flux:menu.item icon="pencil" :href="route('runs.edit', $run)" wire:navigate>Edit</flux:menu.item>
+                                    @endif
+                                    <flux:modal.trigger :name="'share-'.$run->id">
+                                        <flux:menu.item icon="share">Share with driver</flux:menu.item>
+                                    </flux:modal.trigger>
+
+                                    @unless($run->isStarted())
+                                        <flux:menu.separator />
+                                        <flux:modal.trigger :name="'delete-'.$run->id">
+                                            <flux:menu.item variant="danger" icon="trash">Delete</flux:menu.item>
+                                        </flux:modal.trigger>
+                                    @endunless
+                                </flux:menu>
+                            </flux:dropdown>
                         </flux:table.cell>
                     </flux:table.row>
 
@@ -92,6 +105,24 @@
                             </div>
                         </div>
                     </flux:modal>
+
+                    @unless($run->isStarted())
+                        <flux:modal :name="'delete-'.$run->id" class="max-w-md">
+                            <div class="space-y-6">
+                                <div>
+                                    <flux:heading size="lg">Delete this run?</flux:heading>
+                                    <flux:subheading>This will permanently delete "{{ $run->name }}" and all its deliveries. This action cannot be undone.</flux:subheading>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <flux:modal.close>
+                                        <flux:button variant="ghost" class="flex-1">Cancel</flux:button>
+                                    </flux:modal.close>
+                                    <flux:button wire:click="delete({{ $run->id }})" variant="danger" class="flex-1">Delete Run</flux:button>
+                                </div>
+                            </div>
+                        </flux:modal>
+                    @endunless
                 @endforeach
             </flux:table.rows>
         </flux:table>

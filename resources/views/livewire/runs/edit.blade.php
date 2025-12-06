@@ -80,4 +80,32 @@
             <flux:button type="button" variant="ghost" :href="route('runs.show', $run)" wire:navigate>Cancel</flux:button>
         </div>
     </form>
+
+    <flux:card class="border-red-200 dark:border-red-800">
+        <div class="flex items-center justify-between">
+            <div>
+                <flux:heading size="lg">Delete Run</flux:heading>
+                <flux:subheading>Permanently remove this run and all its deliveries</flux:subheading>
+            </div>
+            <flux:modal.trigger name="confirm-delete">
+                <flux:button variant="danger">Delete Run</flux:button>
+            </flux:modal.trigger>
+        </div>
+    </flux:card>
+
+    <flux:modal name="confirm-delete" class="max-w-md">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">Delete this run?</flux:heading>
+                <flux:subheading>This will permanently delete "{{ $run->name }}" and all its deliveries. This action cannot be undone.</flux:subheading>
+            </div>
+
+            <div class="flex gap-2">
+                <flux:modal.close>
+                    <flux:button variant="ghost" class="flex-1">Cancel</flux:button>
+                </flux:modal.close>
+                <flux:button wire:click="delete" variant="danger" class="flex-1">Delete Run</flux:button>
+            </div>
+        </div>
+    </flux:modal>
 </div>

@@ -3,6 +3,8 @@
 namespace App\Livewire\Runs;
 
 use App\Models\Run;
+use Flux;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
@@ -11,6 +13,7 @@ use Livewire\WithPagination;
 
 class Index extends Component
 {
+    use AuthorizesRequests;
     use WithPagination;
 
     #[Url]
@@ -29,6 +32,15 @@ class Index extends Component
             ->when($this->status, fn ($query) => $query->where('status', $this->status))
             ->latest()
             ->paginate(10);
+    }
+
+    public function delete(Run $run): void
+    {
+        $this->authorize('delete', $run);
+
+        $run->delete();
+
+        Flux::toast('Run deleted');
     }
 
     public function render()
