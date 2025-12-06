@@ -43,6 +43,11 @@ it('notifies the first two deliveries when a run starts', function () {
     Mail::assertQueued(OneStopAwayMail::class, fn ($mail) => $mail->hasTo($second->email));
 });
 
+it('returns a 404 for unknown driver links', function () {
+    $this->get('/driver/run/unknown')->assertNotFound();
+    $this->get('/driver/run/unknown/active')->assertNotFound();
+});
+
 it('cascades notifications as deliveries are completed and completes the run when pending stops are exhausted', function () {
     Mail::fake();
 
@@ -131,6 +136,57 @@ it('only completes the run after all deliveries are completed', function () {
 
     expect($run->fresh()->status)->toBe(RunStatus::Completed)
         ->and($second->fresh()->status)->toBe(DeliveryStatus::Completed);
+
+    Mail::assertQueued(YouAreNextMail::class, 1);
+    Mail::assertQueued(OneStopAwayMail::class, 1);
+});
+
+it('does nothing if start is called on a non-pending run', function () {
+    Mail::fake();
+
+    $run = Run::factory()->inProgress()->create();
+
+    session(['driver_run_'.$run->uuid => true]);
+
+    Livewire::test(ActiveRun::class, ['uuid' => $run->uuid])
+        ->call('startRun');
+
+    expect($run->fresh()->status)->toBe(RunStatus::InProgress);
+    Mail::assertNothingQueued();
+});
+
+it('does not complete a delivery unless it is notified', function () {
+    Mail::fake();
+
+    $run = Run::factory()->create();
+    $pending = Delivery::factory()->for($run)->create(['status' => DeliveryStatus::Pending]);
+
+    session(['driver_run_'.$run->uuid => true]);
+
+    Livewire::test(ActiveRun::class, ['uuid' => $run->uuid])
+        ->call('completeDelivery', $pending->id);
+
+    expect($pending->fresh()->status)->toBe(DeliveryStatus::Pending);
+    Mail::assertNothingQueued();
+});
+
+it('does not send duplicate notifications when start is called twice', function () {
+    Mail::fake();
+
+    $run = Run::factory()->create();
+    $first = Delivery::factory()->for($run)->create(['position' => 1, 'email' => 'first@example.com']);
+    $second = Delivery::factory()->for($run)->create(['position' => 2, 'email' => 'second@example.com']);
+
+    session(['driver_run_'.$run->uuid => true]);
+
+    $component = Livewire::test(ActiveRun::class, ['uuid' => $run->uuid]);
+
+    $component->call('startRun');
+    $component->call('startRun');
+
+    expect($run->fresh()->status)->toBe(RunStatus::InProgress)
+        ->and($first->fresh()->status)->toBe(DeliveryStatus::Notified)
+        ->and($second->fresh()->status)->toBe(DeliveryStatus::Notified);
 
     Mail::assertQueued(YouAreNextMail::class, 1);
     Mail::assertQueued(OneStopAwayMail::class, 1);
