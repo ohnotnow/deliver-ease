@@ -22,6 +22,7 @@ class TestDataSeeder extends Seeder
         $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => bcrypt('secret'),
             'business_id' => $business->id,
         ]);
 

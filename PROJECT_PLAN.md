@@ -95,20 +95,18 @@ are going.
   - view: user's business_id must match run's business_id
   - update/delete: same + run must be in Pending status
 
-### Phase 4: Business Owner UI - IN PROGRESS
+### Phase 4: Business Owner UI - COMPLETE
 
-- [ ] **4.1 Dashboard** - Stub created, needs implementation
-- [ ] **4.2 Runs Index** - Stub created, needs implementation
-- [ ] **4.3 Runs Create** - Stub created, needs implementation
-- [ ] **4.4 Runs Edit** - Stub created, needs implementation
-- [ ] **4.5 Runs Show** - Stub created, needs implementation
+- [x] **4.1 Dashboard** - Stats cards (active/pending/completed today), recent runs table with status badges
+- [x] **4.2 Runs Index** - Paginated table with status filter, share modal with copyable URL/PIN
+- [x] **4.3 Runs Create** - Form with run name, PIN (auto-generated), dynamic delivery rows
+- [x] **4.4 Runs Edit** - Pre-filled form, only accessible for pending runs (via RunPolicy)
+- [x] **4.5 Runs Show** - Progress tracking with polling, delivery status list, share modal
 
-**Note:** All Livewire component classes and views have been created as stubs. Need to implement the actual logic and Flux UI views.
+### Phase 5: Driver UI - COMPLETE
 
-### Phase 5: Driver UI - PENDING
-
-- [ ] **5.1 AccessRun** - Stub created, needs implementation
-- [ ] **5.2 ActiveRun** - Stub created, needs implementation
+- [x] **5.1 AccessRun** - Mobile-friendly PIN entry screen, session-based authentication
+- [x] **5.2 ActiveRun** - Mobile-optimized TODO interface with Start button, large Complete buttons, progress footer
 
 ### Phase 6: Testing - PENDING
 
@@ -131,34 +129,20 @@ are going.
 
 ## Next Steps (When Resuming)
 
-1. **Run migrations** - `php artisan migrate` to create the tables
+1. **Run migrations** - `php artisan migrate` to create the tables (if not already done)
 
-2. **Implement Dashboard component** (`app/Livewire/Dashboard.php`)
-   - Show overview stats (active runs, completed today)
-   - List recent runs with status indicators
+2. **Seed test data** - `php artisan db:seed --class=TestDataSeeder` for local development
 
-3. **Implement Runs/Index component**
-   - Table of all runs for the business
-   - Status filter
-   - Share link button (copy to clipboard)
+3. **Write feature tests**
+   - `RunManagementTest` - CRUD operations, authorization
+   - `DriverAccessTest` - PIN validation, session handling
+   - `DeliveryNotificationTest` - Email sending, state transitions
 
-4. **Implement Runs/Create component**
-   - Form with run name, PIN
-   - Dynamic rows for deliveries (Name + Email fields)
-   - Add/remove delivery rows
-
-5. **Implement Runs/Show component**
-   - Progress tracking view
-   - Real-time updates via polling
-
-6. **Implement Runs/Edit component**
-   - Pre-filled form, only editable if pending
-
-7. **Implement Driver UI** (AccessRun + ActiveRun)
-   - PIN entry
-   - Mobile-friendly TODO interface
-
-8. **Write feature tests**
+4. **Test the full flow manually**
+   - Create a run as a business owner
+   - Share the link with a driver
+   - Enter PIN and start the run
+   - Complete deliveries and verify notifications
 
 ---
 

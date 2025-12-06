@@ -2,10 +2,80 @@
 
 namespace App\Livewire\Runs;
 
+use App\Models\Run;
+use Flux;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Create extends Component
 {
+    public string $name = '';
+
+    public string $pin = '';
+
+    /** @var array<int, array{name: string, email: string}> */
+    public array $deliveries = [
+        ['name' => '', 'email' => ''],
+    ];
+
+    public function mount(): void
+    {
+        $this->pin = $this->generatePin();
+    }
+
+    public function addDelivery(): void
+    {
+        $this->deliveries[] = ['name' => '', 'email' => ''];
+    }
+
+    public function removeDelivery(int $index): void
+    {
+        if (count($this->deliveries) > 1) {
+            unset($this->deliveries[$index]);
+            $this->deliveries = array_values($this->deliveries);
+        }
+    }
+
+    public function save(): void
+    {
+        $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'pin' => ['required', 'string', 'size:4'],
+            'deliveries' => ['required', 'array', 'min:1'],
+            'deliveries.*.email' => ['required', 'email'],
+            'deliveries.*.name' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $run = Run::create([
+            'business_id' => Auth::user()->business_id,
+            'created_by_user_id' => Auth::id(),
+            'name' => $this->name,
+            'pin' => $this->pin,
+        ]);
+
+        foreach ($this->deliveries as $position => $delivery) {
+            $run->deliveries()->create([
+                'email' => $delivery['email'],
+                'name' => $delivery['name'] ?: null,
+                'position' => $position + 1,
+            ]);
+        }
+
+        Flux::toast('Run created successfully');
+
+        $this->redirect(route('runs.show', $run), navigate: true);
+    }
+
+    public function generatePin(): string
+    {
+        return str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+    }
+
+    public function regeneratePin(): void
+    {
+        $this->pin = $this->generatePin();
+    }
+
     public function render()
     {
         return view('livewire.runs.create');

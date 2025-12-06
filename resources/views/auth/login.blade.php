@@ -1,56 +1,56 @@
 <x-layouts.app>
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="w-full max-w-md">
-            <flux:card>
-                <div class="text-center mb-6">
-                    <flux:heading size="xl">{{ ucwords(config('app.name')) }} Login</flux:heading>
-                </div>
-                
-                @error('authentication')
-                    <div class="mb-6">
-                        <flux:text variant="danger" class="text-center font-bold p-4 bg-red-100 rounded">
-                            {{ $message }}
-                        </flux:text>
-                    </div>
+<div class="flex min-h-screen">
+    <div class="flex-1 flex justify-center items-center">
+        <div class="w-80 max-w-80 space-y-6">
+            <div class="flex justify-center">
+                <flux:heading size="xl">DeliverEase</flux:heading>
+            </div>
+
+            <flux:heading class="text-center" size="lg">Welcome back</flux:heading>
+
+            <form method="POST" action="{{ route('login') }}" class="flex flex-col gap-6">
+                @csrf
+
+                <flux:input
+                    name="email"
+                    label="Email"
+                    type="email"
+                    placeholder="email@example.com"
+                    value="{{ old('email') }}"
+                    :invalid="$errors->has('email')"
+                />
+
+                @error('email')
+                    <flux:text color="red" class="-mt-4">{{ $message }}</flux:text>
                 @enderror
 
-                @if (config('sso.enabled', true))
-                    <flux:button href="{{ route('login.sso') }}" variant="primary" class="w-full">
-                        Login with SSO
-                    </flux:button>
-                @else
-                    <form method="POST" action="{{ route('login.local') }}" class="space-y-4">
-                        @csrf
-                        
-                        <flux:input
-                            label="Username"
-                            name="username"
-                            type="text"
-                            required
-                            autofocus
-                        />
-                        @error('username')
-                            <flux:text variant="danger" size="sm">{{ $message }}</flux:text>
-                        @enderror
-                        
-                        <flux:input
-                            label="Password"
-                            name="password"
-                            type="password"
-                            required
-                        />
-                        @error('password')
-                            <flux:text variant="danger" size="sm">{{ $message }}</flux:text>
-                        @enderror
-                        
-                        <flux:separator class="my-4" />
-                        
-                        <flux:button type="submit" variant="primary" class="w-full">
-                            Log In
-                        </flux:button>
-                    </form>
-                @endif
-            </flux:card>
+                <flux:input
+                    name="password"
+                    label="Password"
+                    type="password"
+                    placeholder="Your password"
+                    :invalid="$errors->has('password')"
+                />
+
+                <flux:checkbox name="remember" label="Remember me for 30 days" />
+
+                <flux:button type="submit" variant="primary" class="w-full">Log in</flux:button>
+            </form>
         </div>
     </div>
+
+    <div class="flex-1 p-4 max-lg:hidden">
+        <div class="relative rounded-lg h-full w-full bg-gradient-to-br from-blue-600 to-indigo-800 flex flex-col items-start justify-end p-16">
+            <div class="text-white">
+                <div class="mb-6 text-3xl xl:text-4xl font-semibold">
+                    Keep your customers informed about their deliveries
+                </div>
+
+                <div class="text-lg text-white/80">
+                    DeliverEase helps small businesses notify customers when their delivery is on the way.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </x-layouts.app>

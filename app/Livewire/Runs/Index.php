@@ -2,10 +2,35 @@
 
 namespace App\Livewire\Runs;
 
+use App\Models\Run;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Index extends Component
 {
+    use WithPagination;
+
+    #[Url]
+    public $status = '';
+
+    public function updatedStatus(): void
+    {
+        $this->resetPage();
+    }
+
+    #[Computed]
+    public function runs()
+    {
+        return Run::where('business_id', Auth::user()->business_id)
+            ->with('deliveries')
+            ->when($this->status, fn ($query) => $query->where('status', $this->status))
+            ->latest()
+            ->paginate(10);
+    }
+
     public function render()
     {
         return view('livewire.runs.index');
