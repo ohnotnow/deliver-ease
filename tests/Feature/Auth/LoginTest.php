@@ -43,10 +43,5 @@ test('login attempts are throttled', function () {
         'password' => 'wrong-password',
     ]);
 
-    $response->assertSessionHasErrors(['email']);
-    
-    $this->assertStringContainsString(
-        'Too many login attempts', 
-        collect(session('errors')->get('email'))->first()
-    );
+    $response->assertTooManyRequests();
 });
