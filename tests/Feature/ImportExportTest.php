@@ -72,7 +72,7 @@ it('can import deliveries from excel', function () {
 
     $onlyEmail = $run->deliveries()->where('email', 'onlyemail@example.com')->first();
     expect($onlyEmail)->not->toBeNull()
-        ->and($onlyEmail->name)->toBeNull();
+        ->and($onlyEmail->name)->toBe('');
 });
 
 it('updates existing deliveries during import', function () {
