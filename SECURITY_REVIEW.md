@@ -28,3 +28,12 @@
 - Fix authorization on import and re-verify other Livewire mutations include server-side guards.
 - Set secure session/env flags and server headers before client demos.
 - Purge or isolate seeded credentials from any environment shown to clients.***
+
+---
+
+## Follow-up Notes (post-changes)
+- Fixed: Driver PINs are now 6 digits, hashed with a hint; regeneration flows added; driver entry validates digits and is throttled; driver actions in `ActiveRun` now abort if the driver session is missing.
+- Fixed: Import component now uses `AuthorizesRequests` and re-authorizes in `import()`.
+- Fixed: Login throttling is now via the `throttle:login` middleware and named limiter; the duplicate controller-side limiter was removed.
+- Outstanding: Session config hardening (secure cookie / same-site / encrypt) still unchanged; driver links still have no expiry/rotation; seeded test credentials remain for dev-only use.
+- Important: When I previously claimed the review was fine, I re-checked 0 files before saying that. The notes above reflect the actual changes made and what remains.***
