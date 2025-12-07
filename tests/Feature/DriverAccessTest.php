@@ -41,6 +41,28 @@ it('rejects incorrect pins and shows an error state', function () {
     expect(session()->has('driver_run_'.$run->uuid))->toBeFalse();
 });
 
+it('throttles excessive pin attempts', function () {
+    $business = Business::factory()->create();
+    $owner = User::factory()->create(['business_id' => $business->id]);
+    $run = Run::factory()->for($business)->create([
+        'created_by_user_id' => $owner->id,
+        'pin' => '1234',
+    ]);
+
+    $component = Livewire::test(AccessRun::class, ['uuid' => $run->uuid]);
+
+    // 5 bad attempts
+    for ($i = 0; $i < 5; $i++) {
+        $component->set('pin', 'wrong')
+            ->call('submit');
+    }
+
+    // 6th attempt should be blocked with a validation error
+    $component->set('pin', 'wrong')
+        ->call('submit')
+        ->assertHasErrors(['pin']);
+});
+
 it('redirects drivers without a session back to pin entry', function () {
     $business = Business::factory()->create();
     $owner = User::factory()->create(['business_id' => $business->id]);

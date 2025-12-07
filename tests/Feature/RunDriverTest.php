@@ -240,3 +240,20 @@ it('sorts completed deliveries to the bottom of the list', function () {
     // Expected: 3 (Pending), 1 (Completed), 2 (Completed) -> Stable sort preserves 1 before 2
     $component->assertSeeInOrder(['Third Stop', 'First Stop', 'Second Stop']);
 });
+
+it('prevents actions without valid session', function () {
+    $run = Run::factory()->create();
+    $delivery = Delivery::factory()->for($run)->create();
+
+    session(['driver_run_'.$run->uuid => true]);
+    $component = Livewire::test(ActiveRun::class, ['uuid' => $run->uuid]);
+    
+    // Clear session to simulate expiry or bypass
+    session()->forget('driver_run_'.$run->uuid);
+    
+    // Try to perform action
+    $component->call('startRun')
+        ->assertForbidden(); // We expect 403 Forbidden
+        
+    expect($run->fresh()->status)->toBe(RunStatus::Pending);
+});
