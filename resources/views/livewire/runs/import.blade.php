@@ -7,12 +7,22 @@
     <flux:card class="space-y-6">
         <flux:heading size="lg">Upload File</flux:heading>
         <flux:text>Expected format: Column A = Email, Column B = Name (Optional).</flux:text>
-        
-        <div class="flex items-center gap-4">
-            <flux:input type="file" wire:model="file" accept=".xlsx,.xls" />
-            <div wire:loading wire:target="file">
-                <flux:text class="italic">Processing file...</flux:text>
-            </div>
+
+        <flux:file-upload wire:model="file" label="Upload spreadsheet" accept=".xlsx,.xls">
+            <flux:file-upload.dropzone heading="Drop file here or click to browse" text="Excel files (.xlsx) up to 10MB" />
+        </flux:file-upload>
+
+        <div class="flex flex-col gap-2">
+            @if ($file)
+                <flux:file-item
+                    :heading="$file->getClientOriginalName()"
+                    :size="$file->getSize()"
+                >
+                    <x-slot name="actions">
+                        <flux:file-item.remove wire:click="removeFile" aria-label="Remove file" />
+                    </x-slot>
+                </flux:file-item>
+            @endif
         </div>
 
         @error('file')
@@ -61,7 +71,7 @@
                 </flux:table.rows>
             </flux:table>
         </flux:card>
-    @else
+    @elseif(! $file)
         <div class="flex justify-end">
             <flux:button variant="ghost" :href="route('runs.edit', $run)" wire:navigate>Cancel</flux:button>
         </div>

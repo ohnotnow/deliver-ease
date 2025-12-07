@@ -25,6 +25,11 @@ class Import extends Component
         $this->authorize('update', $run);
     }
 
+    public function removeFile()
+    {
+        $this->reset('file', 'previewRows');
+    }
+
     public function updatedFile()
     {
         $this->validate([
@@ -56,6 +61,11 @@ class Import extends Component
                         'name' => 'nullable|string|max:255',
                     ]
                 );
+
+                // If it's the very first row and it fails validation, assume it's a header
+                if ($index === 0 && $validator->fails()) {
+                    continue;
+                }
 
                 $this->previewRows[] = [
                     'email' => $email,
@@ -92,7 +102,7 @@ class Import extends Component
 
             if ($delivery) {
                 $delivery->update([
-                    'name' => $row['name'] ?: $delivery->name,
+                    'name' => $row['name'],
                 ]);
                 $updatedCount++;
             } else {
