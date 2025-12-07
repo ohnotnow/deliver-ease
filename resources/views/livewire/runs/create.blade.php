@@ -17,9 +17,9 @@
 
             <flux:field>
                 <flux:label>Driver PIN</flux:label>
-                <flux:description>The driver will need this PIN to access the run</flux:description>
+                <flux:description>Six-digit code the driver must enter to access this run</flux:description>
                 <flux:input.group>
-                    <flux:input wire:model="pin" maxlength="4" class="font-mono" />
+                    <flux:input wire:model="pin" maxlength="6" class="font-mono" inputmode="numeric" />
                     <flux:button type="button" wire:click="regeneratePin" icon="arrow-path">Regenerate</flux:button>
                 </flux:input.group>
                 <flux:error name="pin" />

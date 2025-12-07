@@ -3,6 +3,7 @@
 namespace App\Livewire\Runs;
 
 use App\Models\Run;
+use Flux;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -13,10 +14,15 @@ class Show extends Component
 
     public Run $run;
 
+    public ?string $generatedPin = null;
+
+    public ?string $pinHint = null;
+
     public function mount(Run $run): void
     {
         $this->authorize('view', $run);
         $this->run = $run;
+        $this->pinHint = $run->pin_hint;
     }
 
     #[Computed]
@@ -35,6 +41,16 @@ class Show extends Component
         }
 
         return (int) round(($this->run->completedDeliveriesCount() / $total) * 100);
+    }
+
+    public function generateDriverPin(): void
+    {
+        $this->authorize('update', $this->run);
+
+        $this->generatedPin = $this->run->regeneratePin();
+        $this->pinHint = $this->run->pin_hint;
+
+        Flux::toast('New PIN generated. Share it with your driver.');
     }
 
     public function render()

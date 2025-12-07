@@ -21,7 +21,7 @@ it('lets a business owner create a run with deliveries', function () {
     $component = Livewire::actingAs($user)
         ->test(Create::class)
         ->set('name', 'Morning Run')
-        ->set('pin', '1234')
+        ->set('pin', '123456')
         ->set('deliveries', [
             ['email' => 'first@example.com', 'name' => 'First Stop'],
             ['email' => 'second@example.com', 'name' => ''],
@@ -35,7 +35,8 @@ it('lets a business owner create a run with deliveries', function () {
 
     expect($run)->not->toBeNull()
         ->and($run->business_id)->toBe($business->id)
-        ->and($run->pin)->toBe('1234')
+        ->and($run->pinMatches('123456'))->toBeTrue()
+        ->and($run->pin_hint)->toBe('3456')
         ->and($run->deliveries)->toHaveCount(2)
         ->and($run->deliveries->pluck('email')->all())->toEqual([
             'first@example.com',
@@ -84,7 +85,8 @@ it('allows pending runs to be updated with new deliveries', function () {
     $run = Run::factory()->for($business)->create([
         'created_by_user_id' => $user->id,
         'name' => 'Original Run',
-        'pin' => '1111',
+        'pin_hash' => Run::hashPin('111111'),
+        'pin_hint' => Run::pinHint('111111'),
     ]);
 
     Delivery::factory()->for($run)->create(['position' => 1, 'email' => 'old1@example.com', 'name' => 'Old 1']);
@@ -93,7 +95,7 @@ it('allows pending runs to be updated with new deliveries', function () {
     Livewire::actingAs($user)
         ->test(Edit::class, ['run' => $run])
         ->set('name', 'Updated Run')
-        ->set('pin', '2222')
+        ->set('pin', '222222')
         ->set('deliveries', [
             ['id' => null, 'email' => 'new1@example.com', 'name' => 'New 1'],
             ['id' => null, 'email' => 'new2@example.com', 'name' => ''],
@@ -105,7 +107,8 @@ it('allows pending runs to be updated with new deliveries', function () {
     $run->refresh();
 
     expect($run->name)->toBe('Updated Run')
-        ->and($run->pin)->toBe('2222')
+        ->and($run->pinMatches('222222'))->toBeTrue()
+        ->and($run->pin_hint)->toBe('2222')
         ->and($run->deliveries)->toHaveCount(2)
         ->and($run->deliveries->pluck('email')->all())->toEqual([
             'new1@example.com',
@@ -120,7 +123,8 @@ it('validates fields when updating a run', function () {
     $run = Run::factory()->for($business)->create([
         'created_by_user_id' => $user->id,
         'name' => 'Original',
-        'pin' => '1234',
+        'pin_hash' => Run::hashPin('123456'),
+        'pin_hint' => Run::pinHint('123456'),
     ]);
 
     Delivery::factory()->for($run)->create(['position' => 1, 'email' => 'first@example.com']);
@@ -153,7 +157,7 @@ it('validates fields when updating a run', function () {
         ]);
 
     expect($run->fresh()->name)->toBe('Original')
-        ->and($run->fresh()->pin)->toBe('1234');
+        ->and($run->fresh()->pinMatches('123456'))->toBeTrue();
 });
 
 it('lists only the authenticated business runs and can filter by status', function () {
@@ -203,7 +207,7 @@ it('keeps at least one delivery row when removing', function () {
         ->assertCount('deliveries', 1);
 });
 
-it('generates a four digit pin when regenerating', function () {
+it('generates a six digit pin when regenerating', function () {
     $business = Business::factory()->create();
     $user = User::factory()->create(['business_id' => $business->id]);
 
@@ -216,12 +220,12 @@ it('generates a four digit pin when regenerating', function () {
 
     $newPin = $component->get('pin');
 
-    expect($newPin)->toMatch('/^\\d{4}$/')
+    expect($newPin)->toMatch('/^\\d{6}$/')
         ->and($newPin)->not->toBe('');
 
     // It may occasionally match by chance; ensure at least format correctness.
-    expect(strlen($newPin))->toBe(4);
-    expect(strlen($firstPin))->toBe(4);
+    expect(strlen($newPin))->toBe(6);
+    expect(strlen($firstPin))->toBe(6);
 });
 
 it('persists reordered deliveries when saving edits', function () {
@@ -229,7 +233,8 @@ it('persists reordered deliveries when saving edits', function () {
     $user = User::factory()->create(['business_id' => $business->id]);
     $run = Run::factory()->for($business)->create([
         'created_by_user_id' => $user->id,
-        'pin' => '1234',
+        'pin_hash' => Run::hashPin('123456'),
+        'pin_hint' => Run::pinHint('123456'),
     ]);
 
     $first = Delivery::factory()->for($run)->create(['position' => 1, 'email' => 'first@example.com']);

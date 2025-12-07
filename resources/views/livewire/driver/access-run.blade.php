@@ -7,7 +7,7 @@
 
         <form wire:submit="submit" class="space-y-6">
             <div class="space-y-2">
-                <flux:otp wire:model="pin" length="4" submit="auto" class="mx-auto" />
+                <flux:otp wire:model="pin" length="6" submit="auto" class="mx-auto" />
                 @if($invalidPin)
                     <flux:error class="text-center">Incorrect PIN. Please try again.</flux:error>
                 @endif

@@ -53,7 +53,7 @@ class Create extends Component
     {
         $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'pin' => ['required', 'string', 'size:4'],
+            'pin' => ['required', 'digits:6'],
             'deliveries' => ['required', 'array', 'min:1'],
             'deliveries.*.email' => ['required', 'email'],
             'deliveries.*.name' => ['nullable', 'string', 'max:255'],
@@ -63,7 +63,8 @@ class Create extends Component
             'business_id' => Auth::user()->business_id,
             'created_by_user_id' => Auth::id(),
             'name' => $this->name,
-            'pin' => $this->pin,
+            'pin_hash' => Run::hashPin($this->pin),
+            'pin_hint' => Run::pinHint($this->pin),
         ]);
 
         foreach ($this->deliveries as $position => $delivery) {
@@ -81,7 +82,7 @@ class Create extends Component
 
     public function generatePin(): string
     {
-        return str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        return Run::generatePin();
     }
 
     public function regeneratePin(): void

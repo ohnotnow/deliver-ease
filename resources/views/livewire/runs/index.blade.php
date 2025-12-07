@@ -95,7 +95,21 @@
                             </div>
 
                             <flux:input label="Driver Link" icon="link" :value="$run->getDriverUrl()" readonly copyable />
-                            <flux:input label="PIN" icon="key" :value="$run->pin" readonly copyable />
+                            @if(isset($generatedPins[$run->id]))
+                                <flux:input label="PIN" icon="key" :value="$generatedPins[$run->id]" readonly copyable />
+                                <flux:callout color="green" icon="check-circle">Share this new PIN with your driver now.</flux:callout>
+                            @else
+                                <flux:callout icon="shield-check" color="zinc">
+                                    PINs are hidden for security. Generate a new PIN to share
+                                    @if($run->pin_hint)
+                                        (current PIN ends in {{ $run->pin_hint }}).
+                                    @endif
+                                </flux:callout>
+                            @endif
+
+                            @if($run->isPending())
+                                <flux:button wire:click="generateDriverPin({{ $run->id }})" icon="key">Generate new PIN</flux:button>
+                            @endif
 
                             <div class="flex">
                                 <flux:spacer />

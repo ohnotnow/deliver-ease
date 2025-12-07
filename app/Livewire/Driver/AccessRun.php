@@ -4,6 +4,7 @@ namespace App\Livewire\Driver;
 
 use App\Models\Run;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class AccessRun extends Component
@@ -21,7 +22,7 @@ class AccessRun extends Component
 
     public function submit(): void
     {
-        $throttleKey = 'driver-access:'.$this->run->uuid.':'.request()->ip();
+        $throttleKey = $this->throttleKey();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -30,12 +31,22 @@ class AccessRun extends Component
             return;
         }
 
-        if ($this->pin === $this->run->pin) {
+        try {
+            $this->validate([
+                'pin' => ['required', 'digits:6'],
+            ]);
+        } catch (ValidationException $exception) {
+            RateLimiter::hit($throttleKey, decaySeconds: 60);
+
+            throw $exception;
+        }
+
+        if ($this->run->pinMatches($this->pin)) {
             RateLimiter::clear($throttleKey);
             session()->put('driver_run_'.$this->run->uuid, true);
             $this->redirect(route('driver.run', ['uuid' => $this->run->uuid]), navigate: true);
         } else {
-            RateLimiter::hit($throttleKey);
+            RateLimiter::hit($throttleKey, decaySeconds: 60);
             $this->invalidPin = true;
             $this->pin = '';
         }
@@ -44,6 +55,11 @@ class AccessRun extends Component
     public function updatedPin(): void
     {
         $this->invalidPin = false;
+    }
+
+    private function throttleKey(): string
+    {
+        return 'driver-access:'.$this->run->uuid.':'.request()->ip();
     }
 
     public function render()

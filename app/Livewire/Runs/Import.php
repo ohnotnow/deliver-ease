@@ -4,6 +4,7 @@ namespace App\Livewire\Runs;
 
 use App\Models\Run;
 use Flux\Flux;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -11,6 +12,7 @@ use Ohffs\SimpleSpout\ExcelSheet;
 
 class Import extends Component
 {
+    use AuthorizesRequests;
     use WithFileUploads;
 
     public Run $run;
@@ -82,6 +84,8 @@ class Import extends Component
 
     public function import()
     {
+        $this->authorize('update', $this->run);
+
         $validRows = array_filter($this->previewRows, fn ($row) => $row['isValid']);
 
         if (empty($validRows)) {
