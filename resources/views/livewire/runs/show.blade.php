@@ -16,6 +16,7 @@
         </div>
 
         <div class="flex items-center gap-2">
+            <flux:button :href="route('runs.export', $run)" icon="arrow-down-tray">Export</flux:button>
             <flux:modal.trigger name="share-run">
                 <flux:button icon="share">Share with Driver</flux:button>
             </flux:modal.trigger>

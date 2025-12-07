@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/runs/{run}', App\Livewire\Runs\Show::class)->name('runs.show');
     Route::get('/runs/{run}/edit', App\Livewire\Runs\Edit::class)->name('runs.edit');
     Route::get('/runs/{run}/import', App\Livewire\Runs\Import::class)->name('runs.import');
+    Route::get('/runs/{run}/export', App\Http\Controllers\RunExportController::class)->name('runs.export');
 });
 
 // Driver routes (Public access with PIN)
