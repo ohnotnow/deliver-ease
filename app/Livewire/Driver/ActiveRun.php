@@ -16,7 +16,7 @@ class ActiveRun extends Component
         $this->run = Run::where('uuid', $uuid)->firstOrFail();
 
         // Check if driver has entered the PIN
-        if (! session()->has('driver_run_'.$this->run->uuid)) {
+        if (! $this->hasValidDriverSession()) {
             $this->redirect(route('driver.access', ['uuid' => $uuid]), navigate: true);
         }
     }
@@ -44,6 +44,8 @@ class ActiveRun extends Component
 
     public function startRun(): void
     {
+        $this->ensureDriverSession();
+
         if ($this->run->isPending()) {
             $this->run->start();
         }
@@ -51,12 +53,26 @@ class ActiveRun extends Component
 
     public function completeDelivery(int $deliveryId): void
     {
+        $this->ensureDriverSession();
+
         $delivery = Delivery::where('id', $deliveryId)
             ->where('run_id', $this->run->id)
             ->firstOrFail();
 
         if ($delivery->isNotified()) {
             $delivery->markAsCompleted();
+        }
+    }
+
+    private function hasValidDriverSession(): bool
+    {
+        return session()->has('driver_run_'.$this->run->uuid);
+    }
+
+    private function ensureDriverSession(): void
+    {
+        if (! $this->hasValidDriverSession()) {
+            abort(403);
         }
     }
 
