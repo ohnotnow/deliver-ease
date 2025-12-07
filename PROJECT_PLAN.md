@@ -116,6 +116,21 @@ are going.
   - `DriverAccessTest` - PIN validation, session handling
   - `DeliveryNotificationTest` - Email sending, state transitions
 
+### Phase 7: Import/Export Features - COMPLETE
+
+- [x] **7.1 Import Deliveries**
+  - Bulk upload via Excel (.xlsx) on Edit Run page
+  - Previews data with validation status
+  - Updates existing deliveries (by email) or creates new ones
+  - Uses `flux:file-upload` for a modern UI
+
+- [x] **7.2 Export Run**
+  - Download Excel file via "Export" button on Show Run page
+  - Filename includes run slug and date
+  - Lists Name, Email, Status, Notified At, Completed At
+
+- **Note:** No automated tests have been written for these features yet.
+
 ---
 
 ## Notes & Issues Encountered
@@ -146,7 +161,7 @@ are going.
 
 2. **Seed test data** - `php artisan db:seed --class=TestDataSeeder` for local development
 
-3. **Write feature tests** - COMPLETE
+3. **Write feature tests** - COMPLETE (except Import/Export)
 
 4. **Test the full flow manually**
    - Create a run as a business owner
@@ -174,13 +189,16 @@ app/Livewire/Runs/Index.php
 app/Livewire/Runs/Create.php
 app/Livewire/Runs/Edit.php
 app/Livewire/Runs/Show.php
+app/Livewire/Runs/Import.php
 app/Livewire/Driver/AccessRun.php
 app/Livewire/Driver/ActiveRun.php
+app/Http/Controllers/RunExportController.php
 resources/views/livewire/dashboard.blade.php
 resources/views/livewire/runs/index.blade.php
 resources/views/livewire/runs/create.blade.php
 resources/views/livewire/runs/edit.blade.php
 resources/views/livewire/runs/show.blade.php
+resources/views/livewire/runs/import.blade.php
 resources/views/livewire/driver/access-run.blade.php
 resources/views/livewire/driver/active-run.blade.php
 resources/views/emails/you-are-next.blade.php
@@ -198,8 +216,14 @@ database/migrations/2025_12_06_112110_create_runs_table.php
 app/Models/Business.php
 app/Models/Run.php
 app/Models/User.php
+app/Providers/AppServiceProvider.php
+app/Livewire/Dashboard.php
 routes/web.php
 database/seeders/TestDataSeeder.php
 database/factories/BusinessFactory.php
 database/factories/RunFactory.php
+resources/views/layouts/app.blade.php
+resources/views/livewire/dashboard.blade.php
+resources/views/livewire/runs/edit.blade.php
+resources/views/livewire/runs/show.blade.php
 ```

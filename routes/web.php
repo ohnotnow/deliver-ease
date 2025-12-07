@@ -3,10 +3,7 @@
 use App\Livewire\Dashboard;
 use App\Livewire\Driver\AccessRun;
 use App\Livewire\Driver\ActiveRun;
-use App\Livewire\Runs\Create as RunsCreate;
-use App\Livewire\Runs\Edit as RunsEdit;
 use App\Livewire\Runs\Index as RunsIndex;
-use App\Livewire\Runs\Show as RunsShow;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/sso-auth.php';
@@ -20,12 +17,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('/runs', RunsIndex::class)->name('runs.index');
-    Route::get('/runs/create', RunsCreate::class)->name('runs.create');
-    Route::get('/runs/{run}', RunsShow::class)->name('runs.show');
-    Route::get('/runs/{run}/edit', RunsEdit::class)->name('runs.edit');
+    Route::get('/runs/create', App\Livewire\Runs\Create::class)->name('runs.create');
+    Route::get('/runs/{run}', App\Livewire\Runs\Show::class)->name('runs.show');
+    Route::get('/runs/{run}/edit', App\Livewire\Runs\Edit::class)->name('runs.edit');
+    Route::get('/runs/{run}/import', App\Livewire\Runs\Import::class)->name('runs.import');
+    Route::get('/runs/{run}/export', App\Http\Controllers\RunExportController::class)->name('runs.export');
 });
 
-// Public driver routes
+// Driver routes (Public access with PIN)
 Route::prefix('driver')->name('driver.')->group(function () {
     Route::get('/run/{uuid}', AccessRun::class)->name('access');
     Route::get('/run/{uuid}/active', ActiveRun::class)->name('run');
