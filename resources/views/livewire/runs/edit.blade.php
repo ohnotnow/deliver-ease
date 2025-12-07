@@ -32,7 +32,10 @@
                     <flux:heading size="lg">Deliveries</flux:heading>
                     <flux:subheading>Update the stops for this run in order</flux:subheading>
                 </div>
-                <flux:button type="button" wire:click="addDelivery" icon="plus" size="sm">Add Stop</flux:button>
+                <div class="flex gap-2">
+                    <flux:button :href="route('runs.import', $run)" wire:navigate icon="arrow-up-tray" size="sm">Import Excel</flux:button>
+                    <flux:button type="button" wire:click="addDelivery" icon="plus" size="sm">Add Stop</flux:button>
+                </div>
             </div>
 
             <div wire:sort="sortDelivery" class="space-y-4">

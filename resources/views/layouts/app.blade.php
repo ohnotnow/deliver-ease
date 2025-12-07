@@ -15,7 +15,7 @@
             <flux:sidebar sticky collapsible class="bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700 print:hidden">
                 <flux:sidebar.header>
                     <flux:sidebar.brand
-                        href="#"                l
+                        href="#"
                         logo="https://fluxui.dev/img/demo/logo.png"
                         logo:dark="https://fluxui.dev/img/demo/dark-mode-logo.png"
                         name="{{  config('app.name') }}"
@@ -24,9 +24,12 @@
                 </flux:sidebar.header>
                 <flux:sidebar.nav>
                     <flux:sidebar.item icon="home" :href="route('dashboard')" wire:navigate>Dashboard</flux:sidebar.item>
-                    <flux:sidebar.item icon="plus-circle" :href="route('runs.create')" wire:navigate>New Run</flux:sidebar.item>
-                    <flux:separator class="my-2" />
-                    <flux:sidebar.item icon="truck" :href="route('runs.index')" wire:navigate>All Runs</flux:sidebar.item>
+                    
+                    @hasBusiness
+                        <flux:sidebar.item icon="plus-circle" :href="route('runs.create')" wire:navigate>New Run</flux:sidebar.item>
+                        <flux:separator class="my-2" />
+                        <flux:sidebar.item icon="truck" :href="route('runs.index')" wire:navigate>All Runs</flux:sidebar.item>
+                    @endhasBusiness
                 </flux:sidebar.nav>
                 <flux:sidebar.spacer />
                 <flux:sidebar.nav>
@@ -50,7 +53,7 @@
 
             <flux:spacer />
 
-            <flux:dropdown position="top" alignt="start">
+            <flux:dropdown position="top" align="start">
 
                 <flux:menu>
                     <flux:menu.item icon="arrow-right-start-on-rectangle">

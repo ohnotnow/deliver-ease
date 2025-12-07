@@ -31,3 +31,19 @@ it('shows only the authenticated business runs and metrics', function () {
         ->assertSee($pending->name)
         ->assertDontSee($otherRun->name);
 });
+
+it('prompts user to create business if missing', function () {
+    $user = User::factory()->create(['business_id' => null]);
+
+    Livewire::actingAs($user)
+        ->test(Dashboard::class)
+        ->assertSee('Setup Required')
+        ->assertSee('Create Business')
+        ->set('businessName', 'My New Business')
+        ->call('saveBusiness')
+        ->assertHasNoErrors();
+
+    $user->refresh();
+    expect($user->business)->not->toBeNull();
+    expect($user->business->name)->toBe('My New Business');
+});
