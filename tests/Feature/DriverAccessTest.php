@@ -12,12 +12,11 @@ it('allows drivers to proceed when the correct PIN is entered', function () {
     $owner = User::factory()->create(['business_id' => $business->id]);
     $run = Run::factory()->for($business)->create([
         'created_by_user_id' => $owner->id,
-        'pin_hash' => Run::hashPin('123456'),
-        'pin_hint' => Run::pinHint('123456'),
+        'pin' => '1234',
     ]);
 
     Livewire::test(AccessRun::class, ['uuid' => $run->uuid])
-        ->set('pin', '123456')
+        ->set('pin', '1234')
         ->call('submit')
         ->assertHasNoErrors()
         ->assertRedirect(route('driver.run', ['uuid' => $run->uuid]));
@@ -30,12 +29,11 @@ it('rejects incorrect pins and shows an error state', function () {
     $owner = User::factory()->create(['business_id' => $business->id]);
     $run = Run::factory()->for($business)->create([
         'created_by_user_id' => $owner->id,
-        'pin_hash' => Run::hashPin('567890'),
-        'pin_hint' => Run::pinHint('567890'),
+        'pin' => '5678',
     ]);
 
     Livewire::test(AccessRun::class, ['uuid' => $run->uuid])
-        ->set('pin', '000000')
+        ->set('pin', '0000')
         ->call('submit')
         ->assertSet('invalidPin', true)
         ->assertSet('pin', '');
@@ -48,20 +46,19 @@ it('throttles excessive pin attempts', function () {
     $owner = User::factory()->create(['business_id' => $business->id]);
     $run = Run::factory()->for($business)->create([
         'created_by_user_id' => $owner->id,
-        'pin_hash' => Run::hashPin('123456'),
-        'pin_hint' => Run::pinHint('123456'),
+        'pin' => '1234',
     ]);
 
     $component = Livewire::test(AccessRun::class, ['uuid' => $run->uuid]);
 
     // 5 bad attempts
     for ($i = 0; $i < 5; $i++) {
-        $component->set('pin', '111111')
+        $component->set('pin', '1111')
             ->call('submit');
     }
 
     // 6th attempt should be blocked with a validation error
-    $component->set('pin', '111111')
+    $component->set('pin', '1111')
         ->call('submit')
         ->assertHasErrors(['pin']);
 });

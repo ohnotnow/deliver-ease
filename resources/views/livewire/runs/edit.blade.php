@@ -17,14 +17,9 @@
 
             <flux:field>
                 <flux:label>Driver PIN</flux:label>
-                <flux:description>
-                    Six-digit code required for driver access. Current PIN is hidden for security
-                    @if($pinHint)
-                        (ends in {{ $pinHint }}).
-                    @endif
-                </flux:description>
+                <flux:description>Four-digit code the driver must enter to access this run</flux:description>
                 <flux:input.group>
-                    <flux:input wire:model="pin" maxlength="6" class="font-mono" inputmode="numeric" placeholder="Generate or enter new PIN" />
+                    <flux:input wire:model="pin" maxlength="4" class="font-mono" inputmode="numeric" />
                     <flux:button type="button" wire:click="regeneratePin" icon="arrow-path">Regenerate</flux:button>
                 </flux:input.group>
                 <flux:error name="pin" />

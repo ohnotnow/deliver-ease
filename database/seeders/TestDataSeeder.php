@@ -27,13 +27,11 @@ class TestDataSeeder extends Seeder
         ]);
 
         // Create a pending run with deliveries
-        $pendingPin = '123456';
         $pendingRun = Run::factory()->create([
             'business_id' => $business->id,
             'created_by_user_id' => $user->id,
             'name' => 'Monday Morning Deliveries',
-            'pin_hash' => Run::hashPin($pendingPin),
-            'pin_hint' => Run::pinHint($pendingPin),
+            'pin' => random_int(1000, 9999),
         ]);
 
         $deliveryData = [
@@ -59,8 +57,7 @@ class TestDataSeeder extends Seeder
             'business_id' => $business->id,
             'created_by_user_id' => $user->id,
             'name' => 'Afternoon Run',
-            'pin_hash' => Run::hashPin($inProgressPin),
-            'pin_hint' => Run::pinHint($inProgressPin),
+            'pin' => random_int(1000, 9999),
         ]);
 
         Delivery::factory()->completed()->create([

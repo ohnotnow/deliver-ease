@@ -17,8 +17,6 @@ class Edit extends Component
 
     public string $pin = '';
 
-    public ?string $pinHint = null;
-
     /** @var array<int, array{id: int|null, name: string, email: string}> */
     public array $deliveries = [];
 
@@ -28,8 +26,7 @@ class Edit extends Component
 
         $this->run = $run;
         $this->name = $run->name;
-        $this->pinHint = $run->pin_hint;
-        $this->pin = '';
+        $this->pin = $run->pin;
 
         $this->deliveries = $run->deliveries()
             ->orderBy('position')
@@ -74,23 +71,16 @@ class Edit extends Component
 
         $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'pin' => ['nullable', 'digits:6'],
+            'pin' => ['required', 'digits:4'],
             'deliveries' => ['required', 'array', 'min:1'],
             'deliveries.*.email' => ['required', 'email'],
             'deliveries.*.name' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $data = [
+        $this->run->update([
             'name' => $this->name,
-        ];
-
-        if ($this->pin !== '') {
-            $data['pin_hash'] = Run::hashPin($this->pin);
-            $data['pin_hint'] = Run::pinHint($this->pin);
-            $this->pinHint = $data['pin_hint'];
-        }
-
-        $this->run->update($data);
+            'pin' => $this->pin,
+        ]);
 
         // Delete existing deliveries and recreate
         $this->run->deliveries()->delete();

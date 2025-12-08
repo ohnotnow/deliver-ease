@@ -19,9 +19,6 @@ class Index extends Component
     #[Url]
     public $status = '';
 
-    /** @var array<int, string> */
-    public array $generatedPins = [];
-
     public function mount(): void
     {
         $this->authorize('viewAny', Run::class);
@@ -49,15 +46,6 @@ class Index extends Component
         $run->delete();
 
         Flux::toast('Run deleted');
-    }
-
-    public function generateDriverPin(Run $run): void
-    {
-        $this->authorize('update', $run);
-
-        $this->generatedPins[$run->id] = $run->regeneratePin();
-
-        Flux::toast('New PIN generated. Share it with your driver.');
     }
 
     public function render()

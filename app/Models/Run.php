@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class Run extends Model
@@ -21,8 +20,7 @@ class Run extends Model
         'business_id',
         'created_by_user_id',
         'name',
-        'pin_hash',
-        'pin_hint',
+        'pin',
         'status',
         'started_at',
         'completed_at',
@@ -70,43 +68,9 @@ class Run extends Model
         return route('driver.access', ['uuid' => $this->uuid]);
     }
 
-    public static function generatePin(int $length = 6): string
+    public static function generatePin(): string
     {
-        $maxNumber = (10 ** $length) - 1;
-
-        return str_pad((string) random_int(0, $maxNumber), $length, '0', STR_PAD_LEFT);
-    }
-
-    public static function hashPin(string $pin): string
-    {
-        return Hash::make($pin);
-    }
-
-    public static function pinHint(string $pin): string
-    {
-        return substr($pin, -4);
-    }
-
-    public function setPin(string $pin): void
-    {
-        $this->forceFill([
-            'pin_hash' => self::hashPin($pin),
-            'pin_hint' => self::pinHint($pin),
-        ]);
-    }
-
-    public function regeneratePin(): string
-    {
-        $pin = self::generatePin();
-        $this->setPin($pin);
-        $this->save();
-
-        return $pin;
-    }
-
-    public function pinMatches(string $pin): bool
-    {
-        return Hash::check($pin, $this->pin_hash);
+        return str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
     }
 
     public function isPending(): bool

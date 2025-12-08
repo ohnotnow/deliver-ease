@@ -33,7 +33,7 @@ class AccessRun extends Component
 
         try {
             $this->validate([
-                'pin' => ['required', 'digits:6'],
+                'pin' => ['required', 'digits:4'],
             ]);
         } catch (ValidationException $exception) {
             RateLimiter::hit($throttleKey, decaySeconds: 60);
@@ -41,7 +41,7 @@ class AccessRun extends Component
             throw $exception;
         }
 
-        if ($this->run->pinMatches($this->pin)) {
+        if ($this->run->pin === $this->pin) {
             RateLimiter::clear($throttleKey);
             session()->put('driver_run_'.$this->run->uuid, true);
             $this->redirect(route('driver.run', ['uuid' => $this->run->uuid]), navigate: true);

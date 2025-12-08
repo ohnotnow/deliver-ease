@@ -53,7 +53,7 @@ class Create extends Component
     {
         $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'pin' => ['required', 'digits:6'],
+            'pin' => ['required', 'digits:4'],
             'deliveries' => ['required', 'array', 'min:1'],
             'deliveries.*.email' => ['required', 'email'],
             'deliveries.*.name' => ['nullable', 'string', 'max:255'],
@@ -63,8 +63,7 @@ class Create extends Component
             'business_id' => Auth::user()->business_id,
             'created_by_user_id' => Auth::id(),
             'name' => $this->name,
-            'pin_hash' => Run::hashPin($this->pin),
-            'pin_hint' => Run::pinHint($this->pin),
+            'pin' => $this->pin,
         ]);
 
         foreach ($this->deliveries as $position => $delivery) {
