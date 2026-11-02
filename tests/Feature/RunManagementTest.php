@@ -23,8 +23,8 @@ it('lets a business owner create a run with deliveries', function () {
         ->set('name', 'Morning Run')
         ->set('pin', '1234')
         ->set('deliveries', [
-            ['email' => 'first@example.com', 'name' => 'First Stop'],
-            ['email' => 'second@example.com', 'name' => ''],
+            ['email' => 'first@example.com', 'name' => 'First Stop', 'address' => '', 'phone' => ''],
+            ['email' => 'second@example.com', 'name' => '', 'address' => '', 'phone' => ''],
         ])
         ->call('save')
         ->assertHasNoErrors();
@@ -95,8 +95,8 @@ it('allows pending runs to be updated with new deliveries', function () {
         ->set('name', 'Updated Run')
         ->set('pin', '2222')
         ->set('deliveries', [
-            ['id' => null, 'email' => 'new1@example.com', 'name' => 'New 1'],
-            ['id' => null, 'email' => 'new2@example.com', 'name' => ''],
+            ['id' => null, 'email' => 'new1@example.com', 'name' => 'New 1', 'address' => '', 'phone' => ''],
+            ['id' => null, 'email' => 'new2@example.com', 'name' => '', 'address' => '', 'phone' => ''],
         ])
         ->call('save')
         ->assertHasNoErrors()

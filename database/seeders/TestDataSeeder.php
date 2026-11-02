@@ -35,11 +35,11 @@ class TestDataSeeder extends Seeder
         ]);
 
         $deliveryData = [
-            ['email' => 'customer1@example.com', 'name' => '123 Main Street'],
-            ['email' => 'customer2@example.com', 'name' => 'Jane Smith'],
-            ['email' => 'customer3@example.com', 'name' => '456 Oak Avenue'],
-            ['email' => 'customer4@example.com', 'name' => null],
-            ['email' => 'customer5@example.com', 'name' => 'The Corner Shop'],
+            ['email' => 'customer1@example.com', 'name' => 'Sam Taylor', 'address' => '123 Main Street, Anytown', 'phone' => '07700 900123'],
+            ['email' => 'customer2@example.com', 'name' => 'Jane Smith', 'address' => null, 'phone' => '+44 7700 900456'],
+            ['email' => 'customer3@example.com', 'name' => null, 'address' => '456 Oak Avenue, Anytown', 'phone' => null],
+            ['email' => 'customer4@example.com', 'name' => null, 'address' => null, 'phone' => null],
+            ['email' => 'customer5@example.com', 'name' => 'The Corner Shop', 'address' => '7 Market Square, Anytown', 'phone' => '01632 960000'],
         ];
 
         foreach ($deliveryData as $index => $data) {
@@ -47,6 +47,8 @@ class TestDataSeeder extends Seeder
                 'run_id' => $pendingRun->id,
                 'email' => $data['email'],
                 'name' => $data['name'],
+                'address' => $data['address'],
+                'phone' => $data['phone'],
                 'position' => $index + 1,
             ]);
         }

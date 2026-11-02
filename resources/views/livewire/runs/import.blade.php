@@ -6,7 +6,7 @@
 
     <flux:card class="space-y-6">
         <flux:heading size="lg">Upload File</flux:heading>
-        <flux:text>Expected format: Column A = Email, Column B = Name (Optional).</flux:text>
+        <flux:text>Expected format: Column A = Email, Column B = Name, Column C = Address, Column D = Phone. Only the email is required.</flux:text>
 
         <flux:file-upload wire:model="file" label="Upload spreadsheet" accept=".xlsx,.xls">
             <flux:file-upload.dropzone heading="Drop file here or click to browse" text="Excel files (.xlsx) up to 10MB" />
@@ -46,6 +46,8 @@
                 <flux:table.columns>
                     <flux:table.column>Email</flux:table.column>
                     <flux:table.column>Name</flux:table.column>
+                    <flux:table.column>Address</flux:table.column>
+                    <flux:table.column>Phone</flux:table.column>
                     <flux:table.column>Status</flux:table.column>
                 </flux:table.columns>
 
@@ -54,6 +56,8 @@
                         <flux:table.row :key="$index">
                             <flux:table.cell :class="$row['isValid'] ? '' : 'text-red-500'">{{ $row['email'] }}</flux:table.cell>
                             <flux:table.cell>{{ $row['name'] }}</flux:table.cell>
+                            <flux:table.cell>{{ $row['address'] }}</flux:table.cell>
+                            <flux:table.cell>{{ $row['phone'] }}</flux:table.cell>
                             <flux:table.cell>
                                 @if($row['isValid'])
                                     <flux:badge color="green" size="sm" inset="top bottom">Valid</flux:badge>

@@ -60,6 +60,8 @@ We like enums over hardcoded strings for things like statuses, roles, etc.  Use 
 
 Eloquents `findOrFail` or `firstOrFail` methods are your friend.  We have sentry.io exception reporting.  If the application user is trying to do something weird with a non-existent records - let it blow up in their face and be reported to the developers.  
 
+An optional field that is left empty is stored as NULL, never as an empty string, however it arrives (a form, a spreadsheet import, anything else).  Convert blank input to NULL before saving, so code that asks "does this customer have a phone number?" gets the same answer whichever way the record was made.
+
 ### Livewire component class conventions
 
 Our conventions for livewire components are:

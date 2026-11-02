@@ -47,9 +47,11 @@ class Import extends Component
             $rows = (new ExcelSheet)->importFirst($path);
 
             foreach ($rows as $index => $row) {
-                // Expecting simple format: Col A = email, Col B = name (optional)
+                // Expecting simple format: Col A = email, Col B = name, Col C = address, Col D = phone (all but email optional)
                 $email = isset($row[0]) ? strtolower(trim($row[0])) : null;
                 $name = isset($row[1]) ? trim($row[1]) : null;
+                $address = isset($row[2]) ? trim($row[2]) : null;
+                $phone = isset($row[3]) ? trim($row[3]) : null;
 
                 // Skip completely empty rows
                 if (empty($email) && empty($name)) {
@@ -57,10 +59,12 @@ class Import extends Component
                 }
 
                 $validator = Validator::make(
-                    ['email' => $email, 'name' => $name],
+                    ['email' => $email, 'name' => $name, 'address' => $address, 'phone' => $phone],
                     [
                         'email' => 'required|email',
                         'name' => 'nullable|string|max:255',
+                        'address' => 'nullable|string|max:255',
+                        'phone' => 'nullable|string|max:50',
                     ]
                 );
 
@@ -72,6 +76,8 @@ class Import extends Component
                 $this->previewRows[] = [
                     'email' => $email,
                     'name' => $name,
+                    'address' => $address,
+                    'phone' => $phone,
                     'isValid' => $validator->passes(),
                     'errors' => $validator->errors()->all(),
                 ];
@@ -106,14 +112,18 @@ class Import extends Component
 
             if ($delivery) {
                 $delivery->update([
-                    'name' => $row['name'],
+                    'name' => $row['name'] ?: $delivery->name,
+                    'address' => $row['address'] ?: $delivery->address,
+                    'phone' => $row['phone'] ?: $delivery->phone,
                 ]);
                 $updatedCount++;
             } else {
                 $currentMaxPosition++;
                 $this->run->deliveries()->create([
                     'email' => $email,
-                    'name' => $row['name'],
+                    'name' => $row['name'] ?: null,
+                    'address' => $row['address'] ?: null,
+                    'phone' => $row['phone'] ?: null,
                     'position' => $currentMaxPosition,
                 ]);
                 $importedCount++;

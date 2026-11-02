@@ -75,6 +75,12 @@
                         @if($delivery->name)
                             <flux:text variant="subtle" class="text-sm truncate">{{ $delivery->email }}</flux:text>
                         @endif
+                        @if($delivery->address)
+                            <flux:text variant="subtle" class="text-sm">{{ $delivery->address }}</flux:text>
+                        @endif
+                        @if($delivery->phone)
+                            <flux:text variant="subtle" class="text-sm">{{ $delivery->phone }}</flux:text>
+                        @endif
                     </div>
 
                     <div>

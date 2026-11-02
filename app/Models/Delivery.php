@@ -18,6 +18,8 @@ class Delivery extends Model
         'run_id',
         'email',
         'name',
+        'address',
+        'phone',
         'position',
         'status',
         'notified_at',
@@ -62,6 +64,11 @@ class Delivery extends Model
     public function getDisplayNameAttribute(): string
     {
         return $this->name ?: $this->email;
+    }
+
+    public function getPhoneLinkAttribute(): string
+    {
+        return 'tel:'.str_replace(' ', '', $this->phone);
     }
 
     // Custom Methods

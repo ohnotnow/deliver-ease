@@ -16,9 +16,9 @@ class Create extends Component
 
     public string $pin = '';
 
-    /** @var array<int, array{name: string, email: string}> */
+    /** @var array<int, array{name: string, email: string, address: string, phone: string}> */
     public array $deliveries = [
-        ['name' => '', 'email' => ''],
+        ['name' => '', 'email' => '', 'address' => '', 'phone' => ''],
     ];
 
     public function mount(): void
@@ -30,7 +30,7 @@ class Create extends Component
 
     public function addDelivery(): void
     {
-        $this->deliveries[] = ['name' => '', 'email' => ''];
+        $this->deliveries[] = ['name' => '', 'email' => '', 'address' => '', 'phone' => ''];
     }
 
     public function removeDelivery(int $index): void
@@ -57,6 +57,8 @@ class Create extends Component
             'deliveries' => ['required', 'array', 'min:1'],
             'deliveries.*.email' => ['required', 'email'],
             'deliveries.*.name' => ['nullable', 'string', 'max:255'],
+            'deliveries.*.address' => ['nullable', 'string', 'max:255'],
+            'deliveries.*.phone' => ['nullable', 'string', 'max:50'],
         ]);
 
         $run = Run::create([
@@ -70,6 +72,8 @@ class Create extends Component
             $run->deliveries()->create([
                 'email' => $delivery['email'],
                 'name' => $delivery['name'] ?: null,
+                'address' => $delivery['address'] ?: null,
+                'phone' => $delivery['phone'] ?: null,
                 'position' => $position + 1,
             ]);
         }

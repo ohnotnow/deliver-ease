@@ -52,7 +52,16 @@
                             <flux:input
                                 wire:model="deliveries.{{ $index }}.name"
                                 label="Name (optional)"
-                                placeholder="Customer name or address"
+                                placeholder="Customer name"
+                            />
+                            <flux:input
+                                wire:model="deliveries.{{ $index }}.address"
+                                label="Address (optional)"
+                            />
+                            <flux:input
+                                wire:model="deliveries.{{ $index }}.phone"
+                                type="tel"
+                                label="Phone (optional)"
                             />
                         </div>
 

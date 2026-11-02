@@ -15,16 +15,18 @@ class RunExportController extends Controller
     {
         $this->authorize('view', $run);
 
-        $filename = Str::slug($run->name) . '-' . now()->format('d-m-Y') . '.xlsx';
-        
+        $filename = Str::slug($run->name).'-'.now()->format('d-m-Y').'.xlsx';
+
         $data = [
-            ['Name', 'Email', 'Status', 'Notified At', 'Completed At']
+            ['Name', 'Email', 'Address', 'Phone', 'Status', 'Notified At', 'Completed At'],
         ];
 
         foreach ($run->deliveries()->orderBy('position')->get() as $delivery) {
             $data[] = [
                 $delivery->name,
                 $delivery->email,
+                $delivery->address,
+                $delivery->phone,
                 $delivery->status->value,
                 $delivery->notified_at?->format('Y-m-d H:i:s'),
                 $delivery->completed_at?->format('Y-m-d H:i:s'),

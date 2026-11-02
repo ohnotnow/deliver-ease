@@ -17,7 +17,7 @@ class Edit extends Component
 
     public string $pin = '';
 
-    /** @var array<int, array{id: int|null, name: string, email: string}> */
+    /** @var array<int, array{id: int|null, name: string, email: string, address: string, phone: string}> */
     public array $deliveries = [];
 
     public function mount(Run $run): void
@@ -35,17 +35,19 @@ class Edit extends Component
                 'id' => $delivery->id,
                 'name' => $delivery->name ?? '',
                 'email' => $delivery->email,
+                'address' => $delivery->address ?? '',
+                'phone' => $delivery->phone ?? '',
             ])
             ->toArray();
 
         if (empty($this->deliveries)) {
-            $this->deliveries = [['id' => null, 'name' => '', 'email' => '']];
+            $this->deliveries = [['id' => null, 'name' => '', 'email' => '', 'address' => '', 'phone' => '']];
         }
     }
 
     public function addDelivery(): void
     {
-        $this->deliveries[] = ['id' => null, 'name' => '', 'email' => ''];
+        $this->deliveries[] = ['id' => null, 'name' => '', 'email' => '', 'address' => '', 'phone' => ''];
     }
 
     public function removeDelivery(int $index): void
@@ -75,6 +77,8 @@ class Edit extends Component
             'deliveries' => ['required', 'array', 'min:1'],
             'deliveries.*.email' => ['required', 'email'],
             'deliveries.*.name' => ['nullable', 'string', 'max:255'],
+            'deliveries.*.address' => ['nullable', 'string', 'max:255'],
+            'deliveries.*.phone' => ['nullable', 'string', 'max:50'],
         ]);
 
         $this->run->update([
@@ -89,6 +93,8 @@ class Edit extends Component
             $this->run->deliveries()->create([
                 'email' => $delivery['email'],
                 'name' => $delivery['name'] ?: null,
+                'address' => $delivery['address'] ?: null,
+                'phone' => $delivery['phone'] ?: null,
                 'position' => $position + 1,
             ]);
         }

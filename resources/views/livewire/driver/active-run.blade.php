@@ -53,6 +53,12 @@
                         @if($delivery->name)
                             <div class="text-sm text-zinc-500 dark:text-zinc-400 truncate">{{ $delivery->email }}</div>
                         @endif
+                        @if($delivery->address)
+                            <flux:text>{{ $delivery->address }}</flux:text>
+                        @endif
+                        @if($delivery->phone)
+                            <flux:link :href="$delivery->phone_link" class="cursor-pointer">{{ $delivery->phone }}</flux:link>
+                        @endif
                         @if($delivery->isNotified() && !$delivery->isCompleted())
                             <flux:badge color="blue" size="sm" class="mt-1">Customer notified</flux:badge>
                         @endif
