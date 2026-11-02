@@ -116,6 +116,8 @@ Always use the appropriate flux components instead of just <p> and <a> tags. Eg:
    <flux:link :href="route('home')">Home</flux:link>
    ```
 
+When the user has to confirm an action ("are you sure?"), use a Flux modal driven by the Livewire component, never the browser's `confirm()` or Livewire's `wire:confirm`.  The browser dialog looks out of place, and a modal driven by the component can be tested in a plain Pest test.
+
 
 ### Validation
 

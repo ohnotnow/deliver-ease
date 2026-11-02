@@ -12,7 +12,7 @@
         <flux:card class="mb-6 text-center space-y-4">
             <flux:heading size="lg">Ready to start?</flux:heading>
             <flux:text variant="subtle">
-                Tap the button below to begin your delivery run. The first two customers will be notified.
+                Tap the button below to begin your delivery run. Every customer will be emailed their place on the list.
             </flux:text>
             <flux:button wire:click="startRun" variant="primary" class="w-full py-4 text-lg">
                 Start Deliveries
@@ -33,7 +33,7 @@
         @foreach($this->deliveries as $delivery)
             <div
                 wire:key="delivery-{{ $delivery->id }}"
-                class="rounded-xl p-4 {{ $delivery->isCompleted() ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800' : ($delivery->isNotified() ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800' : 'bg-zinc-100 dark:bg-zinc-800 border-2 border-transparent') }}"
+                class="rounded-xl p-4 {{ $delivery->isCompleted() ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800' : ($delivery->is($this->nextStop) ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800' : 'bg-zinc-100 dark:bg-zinc-800 border-2 border-transparent') }}"
             >
                 <div class="flex items-center gap-4">
                     {{-- Position indicator --}}
@@ -42,7 +42,7 @@
                             <flux:icon.check class="w-6 h-6" />
                         </div>
                     @else
-                        <div class="flex items-center justify-center w-12 h-12 rounded-full shrink-0 text-lg font-bold {{ $delivery->isNotified() ? 'bg-blue-500 text-white' : 'bg-zinc-300 dark:bg-zinc-600 text-zinc-600 dark:text-zinc-300' }}">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full shrink-0 text-lg font-bold {{ $delivery->is($this->nextStop) ? 'bg-blue-500 text-white' : 'bg-zinc-300 dark:bg-zinc-600 text-zinc-600 dark:text-zinc-300' }}">
                             {{ $delivery->position }}
                         </div>
                     @endif
@@ -59,13 +59,13 @@
                         @if($delivery->phone)
                             <flux:link :href="$delivery->phone_link" class="cursor-pointer">{{ $delivery->phone }}</flux:link>
                         @endif
-                        @if($delivery->isNotified() && !$delivery->isCompleted())
-                            <flux:badge color="blue" size="sm" class="mt-1">Customer notified</flux:badge>
+                        @if($delivery->is($this->nextStop))
+                            <flux:badge color="blue" size="sm" class="mt-1">Next stop</flux:badge>
                         @endif
                     </div>
 
                     {{-- Action button --}}
-                    @if($delivery->isNotified() && !$delivery->isCompleted())
+                    @if($delivery->canBeCompleted())
                         <flux:button
                             wire:click="completeDelivery({{ $delivery->id }})"
                             variant="primary"
@@ -80,6 +80,26 @@
             </div>
         @endforeach
     </div>
+
+    {{-- Confirm completing a stop out of order --}}
+    <flux:modal name="confirm-out-of-order" class="max-w-md" flyout>
+        @if($this->outOfOrderDelivery)
+            <div class="space-y-6">
+                <div>
+                    <flux:heading size="lg">Mark {{ $this->outOfOrderDelivery->display_name }} as delivered?</flux:heading>
+                    <flux:text class="mt-2">{{ $this->nextStop?->display_name }} is still next.</flux:text>
+                </div>
+
+                <div class="flex gap-2">
+                    <flux:spacer />
+                    <flux:modal.close>
+                        <flux:button class="cursor-pointer">Cancel</flux:button>
+                    </flux:modal.close>
+                    <flux:button wire:click="confirmOutOfOrder" variant="primary" class="cursor-pointer">Mark as delivered</flux:button>
+                </div>
+            </div>
+        @endif
+    </flux:modal>
 
     {{-- Progress footer (fixed at bottom on mobile) --}}
     @if($run->isStarted())

@@ -4,12 +4,15 @@ namespace App\Livewire\Driver;
 
 use App\Models\Delivery;
 use App\Models\Run;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class ActiveRun extends Component
 {
     public Run $run;
+
+    public ?int $outOfOrderDeliveryId = null;
 
     public function mount(string $uuid): void
     {
@@ -21,6 +24,11 @@ class ActiveRun extends Component
         }
     }
 
+    public function render()
+    {
+        return view('livewire.driver.active-run');
+    }
+
     #[Computed]
     public function deliveries()
     {
@@ -28,6 +36,18 @@ class ActiveRun extends Component
             ->get()                     // Get the collection
             ->sortBy(fn ($delivery) => $delivery->isCompleted() ? 1 : 0)
             ->values();
+    }
+
+    #[Computed]
+    public function nextStop(): ?Delivery
+    {
+        return $this->run->nextStop();
+    }
+
+    #[Computed]
+    public function outOfOrderDelivery(): ?Delivery
+    {
+        return $this->run->deliveries()->find($this->outOfOrderDeliveryId);
     }
 
     #[Computed]
@@ -55,13 +75,38 @@ class ActiveRun extends Component
     {
         $this->ensureDriverSession();
 
-        $delivery = Delivery::where('id', $deliveryId)
-            ->where('run_id', $this->run->id)
-            ->firstOrFail();
+        $delivery = $this->run->deliveries()->findOrFail($deliveryId);
 
-        if ($delivery->isNotified()) {
+        if (! $delivery->canBeCompleted()) {
+            return;
+        }
+
+        if (! $delivery->isNextStop()) {
+            $this->outOfOrderDeliveryId = $delivery->id;
+            Flux::modal('confirm-out-of-order')->show();
+
+            return;
+        }
+
+        $delivery->markAsCompleted();
+    }
+
+    public function confirmOutOfOrder(): void
+    {
+        $this->ensureDriverSession();
+
+        if ($this->outOfOrderDeliveryId === null) {
+            return;
+        }
+
+        $delivery = $this->run->deliveries()->findOrFail($this->outOfOrderDeliveryId);
+
+        if ($delivery->canBeCompleted()) {
             $delivery->markAsCompleted();
         }
+
+        $this->reset('outOfOrderDeliveryId');
+        Flux::modal('confirm-out-of-order')->close();
     }
 
     private function hasValidDriverSession(): bool
@@ -74,10 +119,5 @@ class ActiveRun extends Component
         if (! $this->hasValidDriverSession()) {
             abort(403);
         }
-    }
-
-    public function render()
-    {
-        return view('livewire.driver.active-run');
     }
 }

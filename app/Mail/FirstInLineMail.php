@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class OneStopAwayMail extends Mailable implements ShouldQueue
+class FirstInLineMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -19,14 +19,14 @@ class OneStopAwayMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your delivery is one stop away',
+            subject: "You're first in line!",
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.one-stop-away',
+            markdown: 'emails.first-in-line',
             with: [
                 'businessName' => $this->delivery->run->business->name,
                 'recipientName' => $this->delivery->display_name,

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\RunStatus;
 use App\Events\RunStarted;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,7 +59,7 @@ class Run extends Model
 
     public function deliveries(): HasMany
     {
-        return $this->hasMany(Delivery::class)->orderBy('position');
+        return $this->hasMany(Delivery::class)->orderBy('position')->chaperone();
     }
 
     // Custom Methods
@@ -106,14 +107,28 @@ class Run extends Model
         ]);
     }
 
-    public function currentDelivery(): ?Delivery
+    public function nextStop(): ?Delivery
     {
-        return $this->deliveries()->notified()->first();
+        if (! $this->isStarted()) {
+            return null;
+        }
+
+        return $this->deliveries()->stillToDo()->first();
     }
 
-    public function nextPendingDelivery(): ?Delivery
+    public function hasNoStopsLeft(): bool
     {
-        return $this->deliveries()->pending()->first();
+        return $this->deliveries()->stillToDo()->doesntExist();
+    }
+
+    /**
+     * The stops not yet delivered, in order. Each one's key is how many undelivered stops are ahead of it.
+     *
+     * @return Collection<int, Delivery>
+     */
+    public function stopsStillToDo(): Collection
+    {
+        return $this->deliveries()->stillToDo()->get();
     }
 
     public function completedDeliveriesCount(): int

@@ -2,13 +2,13 @@
 
 DeliverEase is a mobile-focused web application designed for small, local businesses that handle their own deliveries. It solves a common problem: keeping customers informed about when their delivery is arriving without requiring expensive logistics software or constant phone calls.
 
-The app works in two parts. Business owners create "delivery runs" - essentially an ordered list of customers getting deliveries that day. They can then share a secure link with their driver. The driver uses a simple, mobile-friendly interface to mark deliveries as complete. As they progress through the route, customers automatically receive email notifications when they're next in line or one stop away.
+The app works in two parts. Business owners create "delivery runs" - essentially an ordered list of customers getting deliveries that day. They can then share a secure link with their driver. The driver uses a simple, mobile-friendly interface to mark deliveries as complete. As they progress through the route, customers automatically receive email notifications: their place on the list when the run starts, then "two stops away" and "you're next" as the driver gets closer.
 
 ## Features
 
 - **Run Management** - Business owners can create, edit, and track delivery runs with drag-and-drop reordering
 - **Secure Driver Access** - Share links use UUIDs with PIN protection for security
-- **Automatic Notifications** - Customers receive "You're Next" and "One Stop Away" emails as the driver progresses
+- **Automatic Notifications** - Every customer is told their place on the list when the run starts, then gets "Two Stops Away" and "You're Next" emails as the driver progresses
 - **Real-time Progress Tracking** - Business owners can monitor delivery progress with live updates
 - **Mobile-first Driver UI** - Large, touch-friendly controls designed for busy drivers on the go
 
@@ -76,10 +76,10 @@ The seeder also creates sample delivery runs with PIN `1234` and `5678` for test
 
 ## How It Works
 
-1. **Business owner** creates a new delivery run with customer emails (and optional names/addresses)
+1. **Business owner** creates a new delivery run with customer emails (and optional names, addresses and phone numbers)
 2. **Business owner** shares the run link + PIN with their driver
-3. **Driver** enters PIN and clicks "Start" - first two customers receive notifications
-4. **Driver** marks each delivery complete - next customer in line gets notified
+3. **Driver** enters PIN and clicks "Start" - every customer is emailed their place on the list
+4. **Driver** marks each delivery complete, in any order - customers are emailed when they're two stops away and when they're next
 5. **Business owner** can track progress in real-time from their dashboard
 
 ## License

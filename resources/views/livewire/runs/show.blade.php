@@ -37,10 +37,10 @@
             ></div>
         </div>
 
-        @if($run->isStarted() && $run->currentDelivery())
+        @if($this->nextStop)
             <flux:callout icon="truck" color="blue">
-                <flux:callout.heading>Currently delivering to</flux:callout.heading>
-                <flux:callout.text>{{ $run->currentDelivery()->display_name }}</flux:callout.text>
+                <flux:callout.heading>Driver is heading to</flux:callout.heading>
+                <flux:callout.text>{{ $this->nextStop->display_name }}</flux:callout.text>
             </flux:callout>
         @elseif($run->isCompleted())
             <flux:callout icon="check-circle" color="green">
@@ -61,8 +61,8 @@
 
         <div class="space-y-2">
             @foreach($this->deliveries as $delivery)
-                <div wire:key="delivery-{{ $delivery->id }}" class="flex items-center gap-4 p-4 rounded-lg {{ $delivery->isCompleted() ? 'bg-green-50 dark:bg-green-900/20' : ($delivery->isNotified() ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-zinc-50 dark:bg-zinc-800') }}">
-                    <div class="flex items-center justify-center w-8 h-8 rounded-full shrink-0 {{ $delivery->isCompleted() ? 'bg-green-500 text-white' : ($delivery->isNotified() ? 'bg-blue-500 text-white' : 'bg-zinc-200 dark:bg-zinc-700') }}">
+                <div wire:key="delivery-{{ $delivery->id }}" class="flex items-center gap-4 p-4 rounded-lg {{ $delivery->isCompleted() ? 'bg-green-50 dark:bg-green-900/20' : ($delivery->is($this->nextStop) ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-zinc-50 dark:bg-zinc-800') }}">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full shrink-0 {{ $delivery->isCompleted() ? 'bg-green-500 text-white' : ($delivery->is($this->nextStop) ? 'bg-blue-500 text-white' : 'bg-zinc-200 dark:bg-zinc-700') }}">
                         @if($delivery->isCompleted())
                             <flux:icon.check variant="mini" />
                         @else
@@ -86,10 +86,10 @@
                     <div>
                         @if($delivery->isCompleted())
                             <flux:badge color="green" size="sm">Completed</flux:badge>
-                        @elseif($delivery->isNotified())
-                            <flux:badge color="blue" size="sm">Notified</flux:badge>
+                        @elseif($delivery->is($this->nextStop))
+                            <flux:badge color="blue" size="sm">Next stop</flux:badge>
                         @else
-                            <flux:badge color="zinc" size="sm">Pending</flux:badge>
+                            <flux:badge color="zinc" size="sm">To do</flux:badge>
                         @endif
                     </div>
                 </div>

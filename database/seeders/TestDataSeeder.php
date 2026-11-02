@@ -72,9 +72,10 @@ class TestDataSeeder extends Seeder
             'position' => 2,
         ]);
 
-        Delivery::factory()->create([
+        Delivery::factory()->notified()->create([
             'run_id' => $inProgressRun->id,
             'position' => 3,
+            'notified_at' => null,
         ]);
     }
 }

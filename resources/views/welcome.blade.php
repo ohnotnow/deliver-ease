@@ -260,7 +260,7 @@
                     </div>
                     <h3 class="text-xl font-bold mb-3">Create a Run</h3>
                     <p class="text-navy-light dark:text-gray-300">
-                        List your delivery stops for the day. Just paste in customer emails and optionally add names or addresses.
+                        List your delivery stops for the day. Just paste in customer emails, and optionally add each customer's name, address and phone number.
                     </p>
                     <!-- Decorative icon -->
                     <div class="absolute top-6 right-6 text-yellow/30">
@@ -294,7 +294,7 @@
                     </div>
                     <h3 class="text-xl font-bold mb-3">Customers Get Notified</h3>
                     <p class="text-navy-light dark:text-gray-300">
-                        As your driver progresses, customers automatically receive "you're next" alerts. No more waiting all day!
+                        When your driver sets off, every customer is told their place on the list. As the driver gets closer, they hear "two stops away", then "you're next". No more waiting all day!
                     </p>
                     <!-- Decorative icon -->
                     <div class="absolute top-6 right-6 text-green/30">
@@ -380,7 +380,7 @@
                                     <p class="font-semibold text-sm text-navy-light dark:text-gray-400">New email from Local Bakery</p>
                                     <p class="font-bold mt-1">You're next for delivery!</p>
                                     <p class="text-sm text-navy-light dark:text-gray-300 mt-2">
-                                        Hi there! Your fresh bread order is on its way. The driver is just one stop away...
+                                        Hi there! Your fresh bread order is next in line. Our driver will be with you shortly...
                                     </p>
                                 </div>
                             </div>
@@ -395,7 +395,7 @@
                                 </div>
                                 <div>
                                     <p class="font-semibold text-sm text-navy-light dark:text-gray-400">Earlier today</p>
-                                    <p class="font-bold mt-1">One stop away!</p>
+                                    <p class="font-bold mt-1">Two stops away!</p>
                                     <p class="text-sm text-navy-light dark:text-gray-300 mt-2">
                                         Your delivery is nearly there...
                                     </p>

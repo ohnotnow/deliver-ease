@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Runs;
 
+use App\Models\Delivery;
 use App\Models\Run;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
@@ -23,6 +24,12 @@ class Show extends Component
     public function deliveries()
     {
         return $this->run->deliveries()->orderBy('position')->get();
+    }
+
+    #[Computed]
+    public function nextStop(): ?Delivery
+    {
+        return $this->run->nextStop();
     }
 
     #[Computed]

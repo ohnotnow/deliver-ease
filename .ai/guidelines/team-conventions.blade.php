@@ -55,7 +55,9 @@ Also note that we like 'fat models' - helper methods, methods that make the main
 
 We like enums over hardcoded strings for things like statuses, roles, etc.  Use laravel's casts to convert the enum to a value.  Our convention is to use \App\Enums\ .
 
-Eloquents `findOrFail` or `firstOrFail` methods are your friend.  We have sentry.io exception reporting.  If the application user is trying to do something weird with a non-existent records - let it blow up in their face and be reported to the developers.  
+Eloquents `findOrFail` or `firstOrFail` methods are your friend.  We have sentry.io exception reporting.  If the application user is trying to do something weird with a non-existent records - let it blow up in their face and be reported to the developers.
+
+An optional field that is left empty is stored as NULL, never as an empty string, however it arrives (a form, a spreadsheet import, anything else).  Convert blank input to NULL before saving, so code that asks "does this customer have a phone number?" gets the same answer whichever way the record was made.
 
 ### Livewire component class conventions
 
@@ -111,6 +113,8 @@ Always use the appropriate flux components instead of just <p> and <a> tags. Eg:
    <flux:link :href="route('home')">Home</flux:link>
    ```
 @endverbatim
+
+When the user has to confirm an action ("are you sure?"), use a Flux modal driven by the Livewire component, never the browser's `confirm()` or Livewire's `wire:confirm`.  The browser dialog looks out of place, and a modal driven by the component can be tested in a plain Pest test.
 
 ### Validation
 

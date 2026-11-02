@@ -3,27 +3,27 @@
 namespace App\Listeners;
 
 use App\Events\RunStarted;
-use App\Mail\OneStopAwayMail;
-use App\Mail\YouAreNextMail;
+use App\Mail\FirstInLineMail;
+use App\Mail\PlaceOnListMail;
 use Illuminate\Support\Facades\Mail;
 
 class SendInitialNotifications
 {
     public function handle(RunStarted $event): void
     {
-        $run = $event->run;
+        $firstStop = $event->run->deliveries->first();
 
-        $firstDelivery = $run->deliveries()->where('position', 1)->first();
-        $secondDelivery = $run->deliveries()->where('position', 2)->first();
+        foreach ($event->run->deliveries as $delivery) {
+            $delivery->markAsNotified();
 
-        if ($firstDelivery) {
-            Mail::to($firstDelivery->email)->queue(new YouAreNextMail($firstDelivery));
-            $firstDelivery->markAsNotified();
-        }
+            if ($delivery->is($firstStop)) {
+                Mail::to($delivery->email)->queue(new FirstInLineMail($delivery));
+                $delivery->recordToldTheyAreNext();
 
-        if ($secondDelivery) {
-            Mail::to($secondDelivery->email)->queue(new OneStopAwayMail($secondDelivery));
-            $secondDelivery->markAsNotified();
+                continue;
+            }
+
+            Mail::to($delivery->email)->queue(new PlaceOnListMail($delivery));
         }
     }
 }
